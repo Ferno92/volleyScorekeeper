@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="horizontal">
+
+    <!--
+    This layout is a two-pane layout for the Sunshine master/detail flow.
+    -->
+    <fragment
+        android:name="com.provehitoIA.ferno92.volleyscorekeeper.matchInfos.TeamInfoFragment"
+        android:id="@+id/match_info_fragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <fragment
+        android:name="com.provehitoIA.ferno92.volleyscorekeeper.matchInfos.EditLineUpFragment"
+        android:id="@+id/edit_lineup_fragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+</LinearLayout>

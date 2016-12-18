@@ -1,0 +1,32 @@
+<resources>
+    <string name="facebook_app_id">419243495130549</string>
+    <string name="app_name">Volley ScoreKeeper</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <!-- Toast message in editor when new game has been successfully inserted [CHAR LIMIT=NONE] -->
+    <string name="insert_game_successful">Game saved</string>
+
+    <!-- Toast message in editor when new game has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="insert_game_failed">Error with saving game</string>
+
+    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">No games saved</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Get started by playing a new game!</string>
+
+    <!-- Toast message in editor when new game has been successfully deleted [CHAR LIMIT=NONE] -->
+    <string name="delete_game_successful">Game deleted</string>
+
+    <!-- Toast message in editor when new game has failed to be deleted [CHAR LIMIT=NONE] -->
+    <string name="delete_game_failed">Error with deleting game</string>
+
+    <!-- Toast message in editor when new game has been successfully deleted [CHAR LIMIT=NONE] -->
+    <string name="delete_all_game_successful">All games deleted</string>
+
+    <!-- Toast message in editor when new game has failed to be deleted [CHAR LIMIT=NONE] -->
+    <string name="delete_all_game_failed">Error with deleting all games</string>
+</resources>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/line_up_scroll">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/edit_lineup_main"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/court_with_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/volleyball_court_position"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            >
+
+            <LinearLayout
+                android:id="@+id/team_a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/line_up_titleA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:text="Line-Up Team A"
+                    android:textColor="#000000"
+                    android:paddingBottom="15dp"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P1:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P2:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P3:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P4:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P5:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P6:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray"></View>
+
+            <LinearLayout
+                android:id="@+id/team_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/line_up_titleB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:text="Line-Up Team B"
+                    android:textColor="#000000"
+                    android:paddingBottom="15dp"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P1:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P2:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P3:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P4:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P5:"/>
+                    <EditText
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P6:"/>
+                    <EditText
+                        android:id="@+id/focus_edit"
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:maxLength="2"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/lineup_edited_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Line-Up edited"
+            android:padding="15dp"
+            android:layout_margin="15dp"
+            android:backgroundTint="@color/colorAccent"
+            android:onClick="saveLineUp"/>
+
+    </LinearLayout>
+</ScrollView>

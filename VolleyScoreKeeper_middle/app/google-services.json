@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "916076572435",
+    "project_id": "volley-scorekeeper"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916076572435:android:22ac37d453288fb9",
+        "android_client_info": {
+          "package_name": "com.provehitoIA.ferno92.volleyscorekeeper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916076572435-e8mu7a7m1nr7snddme0e61mbvgk9cgmi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.provehitoIA.ferno92.volleyscorekeeper",
+            "certificate_hash": "FD7286CB450A26E16CBC2EA58D918D5CBA660F2A"
+          }
+        },
+        {
+          "client_id": "916076572435-ao8t1ji258isiu6hf4s1875g18fgvbng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOAgAZQ73BdR_f2fiMSELDs0oEw9DeQJ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

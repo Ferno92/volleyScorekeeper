@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="horizontal"
+    android:layout_marginTop="65dp">
+
+    <!--
+    This layout is a two-pane layout
+    -->
+    <fragment android:name="com.provehitoIA.ferno92.volleyscorekeeper.homepage.GameListFragment"
+        android:id="@+id/match_fragment_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"/>
+
+    <fragment android:name="com.provehitoIA.ferno92.volleyscorekeeper.homepage.GameListInfoFragment"
+        android:id="@+id/match_fragment_info"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4" />
+
+</LinearLayout>

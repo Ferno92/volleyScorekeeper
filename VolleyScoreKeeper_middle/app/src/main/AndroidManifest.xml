@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.provehitoIA.ferno92.volleyscorekeeper">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity
+            android:name="com.provehitoIA.ferno92.volleyscorekeeper.match.VolleyMatch"
+            android:label="Play Match"
+            android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity">
+        </activity>
+        <activity
+            android:name="com.provehitoIA.ferno92.volleyscorekeeper.match.CurrentLineUpActivity"
+            android:label="Current Line Up"
+            android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.match.VolleyMatch">
+        </activity>
+        <activity
+            android:name="com.provehitoIA.ferno92.volleyscorekeeper.matchInfos.MatchInfo"
+            android:label="Match Info"
+            android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity">
+
+        </activity>
+        <activity
+            android:name="com.provehitoIA.ferno92.volleyscorekeeper.matchInfos.EditLineUp"
+            android:configChanges="keyboardHidden"
+            android:label="Edit Line Up"
+            android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.matchInfos.MatchInfo">
+
+        </activity>
+        <activity
+            android:name="com.provehitoIA.ferno92.volleyscorekeeper.homepage.GameListInfo"
+            android:label="Game Info"
+            android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity">
+
+        </activity>
+        <provider
+            android:authorities="com.provehitoIA.ferno92.volleyscorekeeper"
+            android:name="com.provehitoIA.ferno92.volleyscorekeeper.data.MatchProvider"
+            android:exported="false"></provider>
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="2be11fef31205665bd8e94498fb93242a8cb42f0" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>

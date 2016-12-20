@@ -27,6 +27,18 @@ public class EditLineUpFragment extends Fragment {
     public EditLineUpFragment(){
 
     }
+
+    public static EditLineUpFragment newInstance(
+                                                 String nameA, String nameB){
+        EditLineUpFragment lineUpFragment = new EditLineUpFragment();
+        Bundle args = new Bundle();
+        args.putString("nameA", nameA);
+        args.putString("nameB", nameB);
+        lineUpFragment.setArguments(args);
+
+        return lineUpFragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){

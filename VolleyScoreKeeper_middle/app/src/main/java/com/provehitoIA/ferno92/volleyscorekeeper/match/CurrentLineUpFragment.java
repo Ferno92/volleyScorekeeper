@@ -30,6 +30,19 @@ public class CurrentLineUpFragment extends Fragment {
     public CurrentLineUpFragment(){
 
     }
+
+    public static CurrentLineUpFragment newInstance(ArrayList<String> lineUpA, ArrayList<String> lineUpB,
+                                                 String nameA, String nameB){
+        CurrentLineUpFragment lineUpFragment = new CurrentLineUpFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList("lineUpA", lineUpA);
+        args.putStringArrayList("lineUpB", lineUpB);
+        args.putString("nameA", nameA);
+        args.putString("nameB", nameB);
+        lineUpFragment.setArguments(args);
+
+        return lineUpFragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){

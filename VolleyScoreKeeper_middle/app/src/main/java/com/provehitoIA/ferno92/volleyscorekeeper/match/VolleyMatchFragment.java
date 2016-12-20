@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.provehitoIA.ferno92.volleyscorekeeper.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by lucas on 08/12/2016.
  */
@@ -24,6 +26,11 @@ public class VolleyMatchFragment extends Fragment {
                 container, false);
 
         return rootView;
+    }
+    public static VolleyMatchFragment newInstance(){
+        VolleyMatchFragment volleyMatchFragment = new VolleyMatchFragment();
+
+        return volleyMatchFragment;
     }
 
 }

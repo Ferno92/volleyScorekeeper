@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -21,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -39,13 +40,14 @@ import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract;
 import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchDbHelper;
 import com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
-
 import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
+import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 
 /**
  * Created by lucas on 23/10/2016.
@@ -77,6 +79,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     ShareDialog shareDialog;
     Boolean mOnEditLineUp = false;
 
+    FragmentPagerAdapter adapterViewPager;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -97,15 +101,43 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         // Set lineup if not empty
         setLineUp();
         //Set view
-        mFragmentManager = getSupportFragmentManager();
-        mFragmentManager.addOnBackStackChangedListener(this);
-        android.support.v4.app.FragmentTransaction ft = mFragmentManager.beginTransaction();
-        mainFragment = new VolleyMatchFragment();
-        ft.replace(R.id.volley_match_fragment, mainFragment, "matchMainFragment");
-//        ft.addToBackStack(null);
-        ft.commit();
-        mFragmentManager.executePendingTransactions();
+//        mFragmentManager = getSupportFragmentManager();
+//        mFragmentManager.addOnBackStackChangedListener(this);
+//        android.support.v4.app.FragmentTransaction ft = mFragmentManager.beginTransaction();
+//        mainFragment = new VolleyMatchFragment();
+//        ft.replace(R.id.volley_match_fragment, mainFragment, "matchMainFragment");
+////        ft.addToBackStack(null);
+//        ft.commit();
+//        mFragmentManager.executePendingTransactions();
+        ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
+        adapterViewPager = new MatchPagerAdapter(getSupportFragmentManager());
+        vpPager.setAdapter(adapterViewPager);
+// Attach the page change listener inside the activity
+        vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
+            // This method will be invoked when a new page becomes selected.
+            @Override
+            public void onPageSelected(int position) {
+                Toast.makeText(VolleyMatch.this,
+                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();
+            }
+
+            // This method will be invoked when the current page is scrolled
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Code goes here
+            }
+
+            // Called when the scroll state changes:
+            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Code goes here
+                String message = state == SCROLL_STATE_DRAGGING ? "Start dragging" : (state == SCROLL_STATE_SETTLING ?
+                    "Settling to final position" : (state == SCROLL_STATE_IDLE ? "Stopped dragging" : "wtf"));
+                Toast.makeText(VolleyMatch.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -649,7 +681,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
-        setView();
+//        setView();
     }
 
     private void setView() {
@@ -804,7 +836,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     @Override
     public void onBackStackChanged() {
 
-        setView();
+//        setView();
     }
 }
 

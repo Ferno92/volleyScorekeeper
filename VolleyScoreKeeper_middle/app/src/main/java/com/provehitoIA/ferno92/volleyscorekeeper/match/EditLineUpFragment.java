@@ -28,8 +28,7 @@ public class EditLineUpFragment extends Fragment {
 
     }
 
-    public static EditLineUpFragment newInstance(
-                                                 String nameA, String nameB){
+    public static EditLineUpFragment newInstance(String nameA, String nameB){
         EditLineUpFragment lineUpFragment = new EditLineUpFragment();
         Bundle args = new Bundle();
         args.putString("nameA", nameA);

@@ -31,8 +31,7 @@ public class CurrentLineUpFragment extends Fragment {
 
     }
 
-    public static CurrentLineUpFragment newInstance(ArrayList<String> lineUpA, ArrayList<String> lineUpB,
-                                                 String nameA, String nameB){
+    public static CurrentLineUpFragment newInstance(String nameA, String nameB, ArrayList<String> lineUpA, ArrayList<String> lineUpB){
         CurrentLineUpFragment lineUpFragment = new CurrentLineUpFragment();
         Bundle args = new Bundle();
         args.putStringArrayList("lineUpA", lineUpA);
@@ -51,6 +50,11 @@ public class CurrentLineUpFragment extends Fragment {
                 container, false);
         getLineUp();
         return mRootView;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
     }
 
     private void getLineUp() {

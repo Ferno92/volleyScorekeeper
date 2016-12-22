@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -40,9 +41,12 @@ import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract;
 import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchDbHelper;
 import com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+
 import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
@@ -67,7 +71,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     String totalResult[] = new String[5];
     int hasBall = -1;
     int hasBallPrevious = -1;
-    int mCurrentFragment = - 1;
+    int mCurrentFragment = -1;
 
     ArrayList<String> lineUpA = new ArrayList<String>();
     ArrayList<String> lineUpB = new ArrayList<String>();
@@ -81,6 +85,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     Boolean mOnEditLineUp = false;
 
     MatchPagerAdapter adapterViewPager;
+    ViewPager vpPager;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -100,28 +105,19 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-        // Set lineup if not empty
-        setLineUp();
         //Set view
         mFragmentManager = getSupportFragmentManager();
-//        mFragmentManager.addOnBackStackChangedListener(this);
-//        android.support.v4.app.FragmentTransaction ft = mFragmentManager.beginTransaction();
-//        mainFragment = new VolleyMatchFragment();
-//        ft.replace(R.id.volley_match_fragment, mainFragment, "matchMainFragment");
-////        ft.addToBackStack(null);
-//        ft.commit();
-//        mFragmentManager.executePendingTransactions();
-        ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
-        adapterViewPager = new MatchPagerAdapter(mFragmentManager, this);
+        vpPager = (ViewPager) findViewById(R.id.vpPager);
+        adapterViewPager = new MatchPagerAdapter(mFragmentManager, this, (lineUpA.size() == 6 && lineUpB.size() == 6));
         vpPager.setAdapter(adapterViewPager);
-// Attach the page change listener inside the activity
+        // Attach the page change listener inside the activity
         vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             // This method will be invoked when a new page becomes selected.
             @Override
             public void onPageSelected(int position) {
-//                Toast.makeText(VolleyMatch.this,
-//                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();
+                //                Toast.makeText(VolleyMatch.this,
+                //                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();
                 mCurrentFragment = position;
             }
 
@@ -137,18 +133,29 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             public void onPageScrollStateChanged(int state) {
                 // Code goes here
                 String message = state == SCROLL_STATE_DRAGGING ? "Start dragging" : (state == SCROLL_STATE_SETTLING ?
-                    "Settling to final position" : (state == SCROLL_STATE_IDLE ? "Stopped dragging" : "wtf"));
+                        "Settling to final position" : (state == SCROLL_STATE_IDLE ? "Stopped dragging" : "wtf"));
 //                Toast.makeText(VolleyMatch.this, message, Toast.LENGTH_SHORT).show();
-                if(state == SCROLL_STATE_IDLE){
-                    if(adapterViewPager.getSecondFragment() instanceof EditLineUpFragment && mCurrentFragment == 0){
-                        ((EditLineUpFragment) adapterViewPager.getSecondFragment()).getLineUp();
-                        lineUpA = ((EditLineUpFragment) adapterViewPager.getSecondFragment()).getCurrentLineUpA();
-                        lineUpB = ((EditLineUpFragment) adapterViewPager.getSecondFragment()).getCurrentLineUpB();
-                        if(lineUpA.size() != 6 && lineUpB.size() != 6){
+                if (state == SCROLL_STATE_DRAGGING) {
+                    if (adapterViewPager.getSecondFragment() instanceof CurrentLineUpFragment && mCurrentFragment == 0) {
+                        CurrentLineUpFragment currentLineUpFragment = ((CurrentLineUpFragment) adapterViewPager.getSecondFragment());
+                        currentLineUpFragment.setCurrentLineUp(lineUpA, lineUpB);
+                        currentLineUpFragment.setLineUpView();
+                    }
+                }
+                if (state == SCROLL_STATE_IDLE) {
+                    if (adapterViewPager.getSecondFragment() instanceof EditLineUpFragment && mCurrentFragment == 0) {
+                        EditLineUpFragment editLineUpFragment = ((EditLineUpFragment) adapterViewPager.getSecondFragment());
+                        editLineUpFragment.getLineUp();
+                        lineUpA = editLineUpFragment.getCurrentLineUpA();
+                        lineUpB = editLineUpFragment.getCurrentLineUpB();
+                        if (lineUpA.size() != 6 && lineUpB.size() != 6) {
                             lineUpA.clear();
                             lineUpB.clear();
-                        }else{
-                            adapterViewPager.setIsEditingLineUp(false);
+                        } else {
+//                            if(!editLineUpFragment.checkLineUpRepeated()) {
+                                adapterViewPager.setIsEditingLineUp(false);
+                                editLineUpFragment.getSecondPageListener().onSwitchToNextFragment();
+//                            }
                         }
                     }
                 }
@@ -162,6 +169,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     private void setDataFromIntent() {
         this.teamAName = getIntent().getExtras().getString("teamA");
         this.teamBName = getIntent().getExtras().getString("teamB");
+        // Set lineup if not empty
+        setLineUp();
     }
 
     private void setLineUp() {
@@ -178,18 +187,19 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         super.onPause();
     }
 
-    public String getNameTeamA(){
+    public String getNameTeamA() {
         return this.teamAName;
     }
 
-    public String getNameTeamB(){
+    public String getNameTeamB() {
         return this.teamBName;
     }
 
-    public ArrayList<String> getLineUpA(){
+    public ArrayList<String> getLineUpA() {
         return this.lineUpA;
     }
-    public ArrayList<String> getLineUpB(){
+
+    public ArrayList<String> getLineUpB() {
         return this.lineUpB;
     }
 
@@ -511,7 +521,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         if (scoreTeamA > scoreTeamB && setEnded) {
             displaySetForTeamA(scoreSetTeamA, true);
             displaySetForTeamB(scoreSetTeamB, false);
-        }else if (scoreTeamA < scoreTeamB && setEnded) {
+        } else if (scoreTeamA < scoreTeamB && setEnded) {
             displaySetForTeamA(scoreSetTeamA, false);
             displaySetForTeamB(scoreSetTeamB, true);
         } else {
@@ -547,9 +557,9 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     }
 
     protected void exitByBackKey() {
-        if (!mOnEditLineUp) {
+        if (vpPager.getCurrentItem() == 0) {
 
-            AlertDialog alertbox = new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setMessage("Do you really want to exit game?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
@@ -566,7 +576,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                     })
                     .show();
         } else {
-            swipeBack();
+            vpPager.setCurrentItem(0);
         }
     }
 
@@ -704,7 +714,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
     private void setView() {
 
-        if(this.adapterViewPager.getFirstFragment() != null){
+        if (this.adapterViewPager.getFirstFragment() != null) {
 
         }
 //        Fragment currentFragment = mFragmentManager.findFragmentByTag("matchMainFragment");
@@ -781,8 +791,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     }
 
     private void refillSetResults() {
-        for(int i = 0; i < totalResult.length; i++){
-            if(totalResult[i] != null){
+        for (int i = 0; i < totalResult.length; i++) {
+            if (totalResult[i] != null) {
                 LinearLayout setResults = (LinearLayout) findViewById(R.id.set_list);
                 ((TextView) setResults.getChildAt(i)).setText(totalResult[i]);
             }
@@ -791,17 +801,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
     private void swipeBack() {
         mOnEditLineUp = false;
-        modifyLineUp();
-        // Whatever
-        Toast.makeText(getApplicationContext(), "Swiping back to the game",
-                Toast.LENGTH_SHORT).show();
-        android.support.v4.app.FragmentTransaction ft = mFragmentManager.beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-        mainFragment = new VolleyMatchFragment();
-        ft.replace(R.id.volley_match_fragment, mainFragment, "matchMainFragment");
-        ft.addToBackStack(null);
-        ft.commit();
-        mFragmentManager.executePendingTransactions();
+
     }
 
     private void modifyLineUp() {

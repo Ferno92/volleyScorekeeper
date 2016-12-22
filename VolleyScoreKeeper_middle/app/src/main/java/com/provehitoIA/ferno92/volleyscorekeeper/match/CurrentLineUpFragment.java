@@ -70,7 +70,7 @@ public class CurrentLineUpFragment extends Fragment {
         setLineUpView();
     }
 
-    private void setLineUpView() {
+    public void setLineUpView() {
         TextView tp1a = (TextView) mRootView.findViewById(R.id.tp1a);
         tp1a.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -224,5 +224,9 @@ public class CurrentLineUpFragment extends Fragment {
     }
     public ArrayList<String> getCurrentLineUpB(){
         return mLineUpB;
+    }
+    public void setCurrentLineUp(ArrayList<String> lineUpA, ArrayList<String> lineUpB){
+        this.mLineUpA = lineUpA;
+        this.mLineUpB = lineUpB;
     }
 }

@@ -18,11 +18,16 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
     private Fragment m2ndFragment;
     private VolleyMatch mMainActivity;
     private boolean mIsEditingLineUp = true;
+    SecondPageListener listener = new SecondPageListener();
+    private final FragmentManager mFragmentManager;
 
-    public MatchPagerAdapter(FragmentManager fragmentManager, VolleyMatch activity) {
+    public MatchPagerAdapter(FragmentManager fragmentManager, VolleyMatch activity, boolean isLineUpFilled) {
         super(fragmentManager);
+        this.mFragmentManager = fragmentManager;
         this.mMainActivity = activity;
+        this.mIsEditingLineUp = !isLineUpFilled;
     }
+
     // Returns total number of pages
     @Override
     public int getCount() {
@@ -32,19 +37,19 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: // Fragment # 0 - This will show FirstFragment
+            case 0:
                 return VolleyMatchFragment.newInstance(
                         this.mMainActivity.getNameTeamA(),
                         this.mMainActivity.getNameTeamB()
                 );
-            case 1: // Fragment # 0 - This will show FirstFragment different title
-                if(this.mIsEditingLineUp){
+            case 1:
+                if (this.mIsEditingLineUp) {
 
                     return EditLineUpFragment.newInstance(
                             this.mMainActivity.getNameTeamA(),
-                            this.mMainActivity.getNameTeamB()
+                            this.mMainActivity.getNameTeamB(), listener
                     );
-                }else{
+                } else {
 
                     return CurrentLineUpFragment.newInstance(
                             this.mMainActivity.getNameTeamA(),
@@ -59,6 +64,20 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
+    public int getItemPosition(Object object)
+    {
+        if (object instanceof EditLineUpFragment &&
+                m2ndFragment instanceof CurrentLineUpFragment) {
+            return POSITION_NONE;
+        }
+        if (object instanceof CurrentLineUpFragment &&
+                m2ndFragment instanceof EditLineUpFragment) {
+            return POSITION_NONE;
+        }
+        return POSITION_UNCHANGED;
+    }
+
+    @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
         // save the appropriate reference depending on position
@@ -67,9 +86,9 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
                 this.m1stFragment = (VolleyMatchFragment) createdFragment;
                 break;
             case 1:
-                if(this.mIsEditingLineUp) {
+                if (this.mIsEditingLineUp) {
                     this.m2ndFragment = (EditLineUpFragment) createdFragment;
-                }else{
+                } else {
                     this.m2ndFragment = (CurrentLineUpFragment) createdFragment;
                 }
                 break;
@@ -77,15 +96,26 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
         return createdFragment;
     }
 
-    public Fragment getFirstFragment(){
+    public Fragment getFirstFragment() {
         return this.m1stFragment;
     }
 
-    public Fragment getSecondFragment(){
+    public Fragment getSecondFragment() {
         return this.m2ndFragment;
     }
 
-    public void setIsEditingLineUp(boolean isEditingLineUp){
+    public void setIsEditingLineUp(boolean isEditingLineUp) {
         this.mIsEditingLineUp = isEditingLineUp;
+    }
+
+    private final class SecondPageListener implements
+            SecondPageFragmentListener {
+        public void onSwitchToNextFragment() {
+            mFragmentManager.beginTransaction().remove(m2ndFragment)
+                    .commitNow();
+            m2ndFragment = new CurrentLineUpFragment();
+
+            notifyDataSetChanged();
+        }
     }
 }

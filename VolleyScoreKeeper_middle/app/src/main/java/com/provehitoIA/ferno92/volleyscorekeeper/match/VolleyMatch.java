@@ -35,6 +35,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.PlusShare;
+import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.provehitoIA.ferno92.volleyscorekeeper.OnSwipeTouchListener;
 import com.provehitoIA.ferno92.volleyscorekeeper.R;
 import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract;
@@ -161,6 +162,9 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                 }
             }
         });
+
+        InkPageIndicator inkPageIndicator = (InkPageIndicator) findViewById(R.id.indicator);
+        inkPageIndicator.setViewPager(vpPager);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();

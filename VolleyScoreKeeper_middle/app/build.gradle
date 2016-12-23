@@ -49,4 +49,5 @@ dependencies {
         transitive = true;
     }
     compile 'com.google.android.gms:play-services-appindexing:9.0.0'
+    compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
 }

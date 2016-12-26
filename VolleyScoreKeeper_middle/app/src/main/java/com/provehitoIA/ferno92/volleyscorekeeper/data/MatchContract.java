@@ -28,5 +28,7 @@ public final class MatchContract {
         public final static String COLUMN_RES_A = "result_a";
         public final static String COLUMN_RES_B = "result_b";
         public final static String COLUMN_TOTAL_RES = "total_results";
+        public final static String COLUMN_IMAGE_A = "image_a";
+        public final static String COLUMN_IMAGE_B = "image_b";
     }
 }

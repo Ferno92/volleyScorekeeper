@@ -4,17 +4,27 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.provehitoIA.ferno92.volleyscorekeeper.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by lucas on 06/12/2016.
@@ -27,6 +37,10 @@ public class CurrentLineUpFragment extends Fragment {
     String mNameA;
     String mNameB;
     View mRootView;
+    Boolean isLoadingImageA = false;
+    byte[] mImageA;
+    byte[] mImageB;
+
     public CurrentLineUpFragment(){
 
     }
@@ -51,6 +65,88 @@ public class CurrentLineUpFragment extends Fragment {
         nameBTextView.setText(mNameB);
 
         setLineUpView();
+        setLogos();
+    }
+
+    private void setLogos() {
+        ImageView teamLogoA = (ImageView) mRootView.findViewById(R.id.team_a_logo);
+        ImageView teamLogoB = (ImageView) mRootView.findViewById(R.id.team_b_logo);
+        teamLogoA.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                isLoadingImageA = true;
+                getPicture();
+            }
+        });
+        teamLogoB.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                isLoadingImageA = false;
+                getPicture();
+            }
+        });
+    }
+
+    private void getPicture() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Set logo");
+        builder.setMessage("Take a photo or get a picture from library?");
+        builder.setNeutralButton("Photo", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, 0);//zero can be replaced with any action code
+            }
+        });
+        builder.setPositiveButton("Picture", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        ImageView imageView;
+        if(isLoadingImageA){
+            imageView = (ImageView) mRootView.findViewById(R.id.team_a_logo);
+        }else{
+            imageView = (ImageView) mRootView.findViewById(R.id.team_b_logo);
+        }
+        Bitmap photo = null;
+        switch(requestCode) {
+            case 0:
+                if(resultCode == RESULT_OK){
+                    photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                    imageView.setImageBitmap(photo);
+
+                }
+
+                break;
+            case 1:
+                if(resultCode == RESULT_OK){
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    imageView.setImageURI(selectedImage);
+                    try {
+                        photo = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        if(isLoadingImageA){
+            mImageA = stream.toByteArray();
+        }else{
+            mImageB = stream.toByteArray();
+        }
     }
 
     private void setLineUpView() {
@@ -207,5 +303,12 @@ public class CurrentLineUpFragment extends Fragment {
     }
     public ArrayList<String> getCurrentLineUpB(){
         return mLineUpB;
+    }
+
+    public byte[] getImageA(){
+        return mImageA;
+    }
+    public byte[] getImageB(){
+        return mImageB;
     }
 }

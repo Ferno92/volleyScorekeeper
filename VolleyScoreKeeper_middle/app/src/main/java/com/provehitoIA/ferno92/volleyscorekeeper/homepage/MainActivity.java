@@ -53,6 +53,7 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import io.fabric.sdk.android.Fabric;
 import org.json.JSONArray;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
@@ -165,6 +166,10 @@ public class MainActivity extends AppCompatActivity
         values.put(MatchContract.MatchEntry.COLUMN_NAME_B, "Team B");
         values.put(MatchContract.MatchEntry.COLUMN_RES_A, 3);
         values.put(MatchContract.MatchEntry.COLUMN_RES_B, 2);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] sink = bos.toByteArray();
+        values.put(MatchContract.MatchEntry.COLUMN_IMAGE_A, sink);
+        values.put(MatchContract.MatchEntry.COLUMN_IMAGE_B, sink);
 
         String fakeTotalResult[] = {"25 - 23", "25 - 18", "20 - 25", "22 - 25", "15 - 2"};
         JSONArray mJSONArray = new JSONArray(Arrays.asList(fakeTotalResult));

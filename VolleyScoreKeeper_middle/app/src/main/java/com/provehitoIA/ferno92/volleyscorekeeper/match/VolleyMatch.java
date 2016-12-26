@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuAdapter;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -65,6 +66,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     String totalResult[] = new String[5];
     int hasBall = -1;
     int hasBallPrevious = -1;
+    byte[] mImageA;
+    byte[] mImageB;
 
     ArrayList<String> lineUpA = new ArrayList<String>();
     ArrayList<String> lineUpB = new ArrayList<String>();
@@ -415,6 +418,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         values.put(MatchContract.MatchEntry.COLUMN_RES_A, scoreSetTeamA);
         values.put(MatchContract.MatchEntry.COLUMN_RES_B, scoreSetTeamB);
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, "25 - 23, 25 - 18, 20 - 25, 22 - 25, 15 - 2");
+        values.put(MatchContract.MatchEntry.COLUMN_IMAGE_A, mImageA);
+        values.put(MatchContract.MatchEntry.COLUMN_IMAGE_B, mImageB);
 
         JSONArray mJSONArray = new JSONArray(Arrays.asList(totalResult));
         String totalResultString = mJSONArray.toString();
@@ -442,6 +447,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         outState.putBoolean("setEnded", setEnded);
         outState.putBoolean("matchEnded", matchEnded);
         outState.putStringArray("totalResult", totalResult);
+        outState.putByteArray("imageA", mImageA);
+        outState.putByteArray("imageB", mImageB);
         super.onSaveInstanceState(outState);
     }
 
@@ -469,6 +476,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             displaySetForTeamB(scoreSetTeamB, false);
         }
         totalResult = savedInstanceState.getStringArray("totalResult");
+        mImageA = savedInstanceState.getByteArray("imageA");
+        mImageB = savedInstanceState.getByteArray("imageB");
         //TODO ended game
 
     }
@@ -755,6 +764,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         if (mainFragment instanceof CurrentLineUpFragment) {
             lineUpA = ((CurrentLineUpFragment) mainFragment).getCurrentLineUpA();
             lineUpB = ((CurrentLineUpFragment) mainFragment).getCurrentLineUpB();
+            mImageA = ((CurrentLineUpFragment) mainFragment).getImageA();
+            mImageB = ((CurrentLineUpFragment) mainFragment).getImageB();
             if (scoreTeamA == scoreTeamB && scoreTeamA == 0) {
                 mSavedLineUpA = new ArrayList<>(lineUpA);
                 mSavedLineUpB = new ArrayList<>(lineUpB);

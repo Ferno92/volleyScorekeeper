@@ -29,7 +29,7 @@ public class MatchDbHelper extends SQLiteOpenHelper {
                 + MatchEntry.COLUMN_NAME_B + " TEXT, "
                 + MatchEntry.COLUMN_RES_A + " INTEGER, "
                 + MatchEntry.COLUMN_RES_B + " INTEGER, "
-                + MatchEntry.COLUMN_TOTAL_RES + " TEXT )";
+                + MatchEntry.COLUMN_TOTAL_RES + " TEXT)";
 
         db.execSQL(SQL_CREATE_MATCHES_TABLE);
 
@@ -37,6 +37,5 @@ public class MatchDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 }

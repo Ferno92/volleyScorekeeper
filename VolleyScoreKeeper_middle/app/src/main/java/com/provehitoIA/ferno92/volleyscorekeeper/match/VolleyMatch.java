@@ -120,6 +120,13 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                 //                Toast.makeText(VolleyMatch.this,
                 //                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();
                 mCurrentFragment = position;
+                if(position == 0){
+                    setTitle("Play Match");
+                }else if(adapterViewPager.getIsEditingLineUp()){
+                    setTitle("Edit Line Up");
+                }else{
+                    setTitle("Current Line Up");
+                }
             }
 
             // This method will be invoked when the current page is scrolled

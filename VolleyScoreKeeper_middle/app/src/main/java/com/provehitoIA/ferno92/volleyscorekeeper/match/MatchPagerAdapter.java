@@ -108,6 +108,10 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
         this.mIsEditingLineUp = isEditingLineUp;
     }
 
+    public boolean getIsEditingLineUp() {
+        return this.mIsEditingLineUp;
+    }
+
     private final class SecondPageListener implements
             SecondPageFragmentListener {
         public void onSwitchToNextFragment() {

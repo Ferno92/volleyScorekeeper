@@ -13,6 +13,16 @@
             android:orientation="horizontal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
+            <ImageView
+                android:id="@+id/team_a_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_team_a_logo_placeholder"
+                android:adjustViewBounds="true"
+                android:maxWidth="50dp"
+                android:maxHeight="50dp"
+                />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,6 +46,7 @@
                 android:layout_margin="4dp"
                 android:visibility="invisible"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,6 +54,16 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             >
+
+            <ImageView
+                android:id="@+id/team_b_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_team_b_logo_placeholder"
+                android:adjustViewBounds="true"
+                android:maxWidth="50dp"
+                android:maxHeight="50dp"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

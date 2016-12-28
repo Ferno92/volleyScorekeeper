@@ -4,17 +4,26 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.provehitoIA.ferno92.volleyscorekeeper.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by lucas on 06/12/2016.
@@ -27,6 +36,7 @@ public class CurrentLineUpFragment extends Fragment {
     String mNameA;
     String mNameB;
     View mRootView;
+
     public CurrentLineUpFragment(){
 
     }
@@ -69,6 +79,7 @@ public class CurrentLineUpFragment extends Fragment {
 
         setLineUpView();
     }
+
 
     public void setLineUpView() {
         TextView tp1a = (TextView) mRootView.findViewById(R.id.tp1a);

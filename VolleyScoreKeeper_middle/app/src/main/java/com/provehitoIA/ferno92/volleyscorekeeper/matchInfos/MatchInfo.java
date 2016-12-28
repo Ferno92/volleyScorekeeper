@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -25,6 +27,8 @@ import com.provehitoIA.ferno92.volleyscorekeeper.homepage.GameListInfoFragment;
 import com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity;
 import com.provehitoIA.ferno92.volleyscorekeeper.match.VolleyMatch;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
@@ -43,6 +47,9 @@ public class MatchInfo extends AppCompatActivity {
 
     String teamAName;
     String teamBName;
+    Boolean isLoadingImageA = false;
+    byte[] mImageA;
+    byte[] mImageB;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +85,7 @@ public class MatchInfo extends AppCompatActivity {
         }else{
             //Portrait (in all device) or landscape in mobile only
         }
-
+        setLogos();
     }
 
     public void editLineUp(View v){
@@ -287,6 +294,90 @@ public class MatchInfo extends AppCompatActivity {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private void setLogos() {
+        ImageView teamLogoA = (ImageView)findViewById(R.id.team_a_logo);
+        ImageView teamLogoB = (ImageView) findViewById(R.id.team_b_logo);
+        teamLogoA.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                isLoadingImageA = true;
+                getPicture();
+            }
+        });
+        teamLogoB.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                isLoadingImageA = false;
+                getPicture();
+            }
+        });
+    }
+
+    private void getPicture() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Set logo");
+        builder.setMessage("Take a photo or get a picture from library?");
+        builder.setNeutralButton("Photo", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, 0);//zero can be replaced with any action code
+            }
+        });
+        builder.setPositiveButton("Picture", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
+            }
+        });
+        builder.show();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        ImageView imageView;
+        if(isLoadingImageA){
+            imageView = (ImageView) findViewById(R.id.team_a_logo);
+        }else{
+            imageView = (ImageView) findViewById(R.id.team_b_logo);
+        }
+        Bitmap photo = null;
+        switch(requestCode) {
+            case 0:
+                if(resultCode == RESULT_OK){
+                    photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                    imageView.setImageBitmap(photo);
+
+                }
+
+                break;
+            case 1:
+                if(resultCode == RESULT_OK){
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    imageView.setImageURI(selectedImage);
+                    try {
+                        photo = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if(photo != null) {
+            photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            if (isLoadingImageA) {
+                mImageA = stream.toByteArray();
+            } else {
+                mImageB = stream.toByteArray();
             }
         }
     }

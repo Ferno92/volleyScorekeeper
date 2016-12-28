@@ -30,7 +30,8 @@
         <activity
             android:name="com.provehitoIA.ferno92.volleyscorekeeper.match.VolleyMatch"
             android:label="Play Match"
-            android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity">
+            android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name="com.provehitoIA.ferno92.volleyscorekeeper.match.CurrentLineUpActivity"

@@ -30,6 +30,18 @@ public class CurrentLineUpFragment extends Fragment {
     public CurrentLineUpFragment(){
 
     }
+
+    public static CurrentLineUpFragment newInstance(String nameA, String nameB, ArrayList<String> lineUpA, ArrayList<String> lineUpB){
+        CurrentLineUpFragment lineUpFragment = new CurrentLineUpFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList("lineUpA", lineUpA);
+        args.putStringArrayList("lineUpB", lineUpB);
+        args.putString("nameA", nameA);
+        args.putString("nameB", nameB);
+        lineUpFragment.setArguments(args);
+
+        return lineUpFragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
@@ -38,6 +50,11 @@ public class CurrentLineUpFragment extends Fragment {
                 container, false);
         getLineUp();
         return mRootView;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
     }
 
     private void getLineUp() {
@@ -53,7 +70,7 @@ public class CurrentLineUpFragment extends Fragment {
         setLineUpView();
     }
 
-    private void setLineUpView() {
+    public void setLineUpView() {
         TextView tp1a = (TextView) mRootView.findViewById(R.id.tp1a);
         tp1a.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -207,5 +224,9 @@ public class CurrentLineUpFragment extends Fragment {
     }
     public ArrayList<String> getCurrentLineUpB(){
         return mLineUpB;
+    }
+    public void setCurrentLineUp(ArrayList<String> lineUpA, ArrayList<String> lineUpB){
+        this.mLineUpA = lineUpA;
+        this.mLineUpB = lineUpB;
     }
 }

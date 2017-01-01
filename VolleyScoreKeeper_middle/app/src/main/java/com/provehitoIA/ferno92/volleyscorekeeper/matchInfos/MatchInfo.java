@@ -124,10 +124,7 @@ public class MatchInfo extends AppCompatActivity {
                 alertLineUp.setCancelable(false);
                 alertLineUp.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(MatchInfo.this, VolleyMatch.class);
-                        intent.putExtra("teamA", teamAEditText.getText().toString());
-                        intent.putExtra("teamB", teamBEditText.getText().toString());
-                        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+Intent intent = createIntent(false);
                         startActivity(intent);
                     }
                 });
@@ -140,12 +137,7 @@ public class MatchInfo extends AppCompatActivity {
                 AlertDialog alert = alertLineUp.create();
                 alert.show();
             }else{
-                Intent intent = new Intent(MatchInfo.this, VolleyMatch.class);
-                intent.putExtra("teamA", teamAEditText.getText().toString());
-                intent.putExtra("teamB", teamBEditText.getText().toString());
-                intent.putExtra("lineUpA", lineUpA);
-                intent.putExtra("lineUpB", lineUpB);
-                intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+                Intent intent = createIntent(true);
                 startActivity(intent);
             }
 
@@ -153,6 +145,21 @@ public class MatchInfo extends AppCompatActivity {
             //Show error
             showErrors();
         }
+    }
+
+    private Intent createIntent(boolean withLineUp){
+        Intent intent = new Intent(MatchInfo.this, VolleyMatch.class);
+        intent.putExtra("teamA", teamAEditText.getText().toString());
+        intent.putExtra("teamB", teamBEditText.getText().toString());
+        intent.putExtra("logoA", mImageA);
+        intent.putExtra("logoB", mImageB);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+
+        if(withLineUp){
+            intent.putExtra("lineUpA", lineUpA);
+            intent.putExtra("lineUpB", lineUpB);
+        }
+        return intent;
     }
 
     public void saveTeamsName(){
@@ -373,6 +380,7 @@ public class MatchInfo extends AppCompatActivity {
         }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if(photo != null) {
+            photo = getResizedBitmap(photo, 100);
             photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
             if (isLoadingImageA) {
                 mImageA = stream.toByteArray();
@@ -380,5 +388,20 @@ public class MatchInfo extends AppCompatActivity {
                 mImageB = stream.toByteArray();
             }
         }
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 0) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 }

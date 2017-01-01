@@ -60,7 +60,6 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 
 public class VolleyMatch extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
-    private MatchDbHelper mDbHelper;
     int scoreTeamA = 0;
     int scoreTeamB = 0;
     int scoreSetTeamA = 0;
@@ -73,6 +72,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     int hasBall = -1;
     int hasBallPrevious = -1;
     int mCurrentFragment = -1;
+    byte[] mImageA;
+    byte[] mImageB;
 
     ArrayList<String> lineUpA = new ArrayList<String>();
     ArrayList<String> lineUpB = new ArrayList<String>();
@@ -180,6 +181,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     private void setDataFromIntent() {
         this.teamAName = getIntent().getExtras().getString("teamA");
         this.teamBName = getIntent().getExtras().getString("teamB");
+        this.mImageA = getIntent().getExtras().getByteArray("logoA");
+        this.mImageB = getIntent().getExtras().getByteArray("logoB");
         // Set lineup if not empty
         setLineUp();
     }
@@ -486,6 +489,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         values.put(MatchContract.MatchEntry.COLUMN_RES_A, scoreSetTeamA);
         values.put(MatchContract.MatchEntry.COLUMN_RES_B, scoreSetTeamB);
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, "25 - 23, 25 - 18, 20 - 25, 22 - 25, 15 - 2");
+        values.put(MatchContract.MatchEntry.COLUMN_LOGO_A, mImageA);
+        values.put(MatchContract.MatchEntry.COLUMN_LOGO_B, mImageB);
 
         JSONArray mJSONArray = new JSONArray(Arrays.asList(totalResult));
         String totalResultString = mJSONArray.toString();

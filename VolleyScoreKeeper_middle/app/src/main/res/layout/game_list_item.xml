@@ -50,10 +50,12 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/team_a_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/ic_team_a_logo_placeholder" />
+            android:src="@mipmap/ic_team_a_logo_placeholder"
+            android:minHeight="50dp"/>
 
         <TextView
             android:id="@+id/team_a_score"
@@ -74,10 +76,12 @@
             android:textSize="28sp" />
 
         <ImageView
+            android:id="@+id/team_b_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/ic_team_b_logo_placeholder" />
+            android:src="@mipmap/ic_team_b_logo_placeholder"
+            android:minHeight="50dp" />
     </LinearLayout>
 
     <!--<LinearLayout-->

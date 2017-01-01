@@ -1,6 +1,7 @@
 package com.provehitoIA.ferno92.volleyscorekeeper.data;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -15,7 +16,7 @@ public class MatchDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "championship.db";
 
     // Database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     public MatchDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,7 +30,9 @@ public class MatchDbHelper extends SQLiteOpenHelper {
                 + MatchEntry.COLUMN_NAME_B + " TEXT, "
                 + MatchEntry.COLUMN_RES_A + " INTEGER, "
                 + MatchEntry.COLUMN_RES_B + " INTEGER, "
-                + MatchEntry.COLUMN_TOTAL_RES + " TEXT )";
+                + MatchEntry.COLUMN_TOTAL_RES + " TEXT, "
+                + MatchEntry.COLUMN_LOGO_A + " BLOB, "
+                + MatchEntry.COLUMN_LOGO_B + " BLOB)";
 
         db.execSQL(SQL_CREATE_MATCHES_TABLE);
 
@@ -37,6 +40,11 @@ public class MatchDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        // If you need to add a column
+        if (newVersion > oldVersion) {
+            db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LOGO_A + " BLOB");
+            db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LOGO_B + " BLOB");
+        }
     }
+
 }

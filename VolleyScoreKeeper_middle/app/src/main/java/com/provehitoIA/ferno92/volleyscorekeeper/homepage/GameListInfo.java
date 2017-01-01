@@ -105,7 +105,9 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
                 MatchContract.MatchEntry.COLUMN_NAME_B,
                 MatchContract.MatchEntry.COLUMN_RES_A,
                 MatchContract.MatchEntry.COLUMN_RES_B,
-                MatchContract.MatchEntry.COLUMN_TOTAL_RES
+                MatchContract.MatchEntry.COLUMN_TOTAL_RES,
+                MatchContract.MatchEntry.COLUMN_LOGO_A,
+                MatchContract.MatchEntry.COLUMN_LOGO_B
         };
 
         // This loader will execute the ContentProvider's query method on a background thread

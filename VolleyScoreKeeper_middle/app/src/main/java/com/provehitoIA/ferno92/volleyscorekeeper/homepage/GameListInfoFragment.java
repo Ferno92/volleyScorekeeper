@@ -71,7 +71,6 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
         tNameB = (TextView) rootView.findViewById(R.id.team_b_name);
         tResA = (TextView) rootView.findViewById(R.id.team_a_score);
         tResB = (TextView) rootView.findViewById(R.id.team_b_score);
-        tResB = (TextView) rootView.findViewById(R.id.team_b_score);
         getLoaderManager().initLoader(MATCH_LOADER, null, this);
     }
 
@@ -85,7 +84,9 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
                 MatchContract.MatchEntry.COLUMN_NAME_B,
                 MatchContract.MatchEntry.COLUMN_RES_A,
                 MatchContract.MatchEntry.COLUMN_RES_B,
-                MatchContract.MatchEntry.COLUMN_TOTAL_RES
+                MatchContract.MatchEntry.COLUMN_TOTAL_RES,
+                MatchContract.MatchEntry.COLUMN_LOGO_A,
+                MatchContract.MatchEntry.COLUMN_LOGO_B
         };
 
         // This loader will execute the ContentProvider's query method on a background thread

@@ -53,6 +53,7 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import io.fabric.sdk.android.Fabric;
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
@@ -170,6 +171,8 @@ public class MainActivity extends AppCompatActivity
         JSONArray mJSONArray = new JSONArray(Arrays.asList(fakeTotalResult));
         String totalResultString = mJSONArray.toString();
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, totalResultString);
+        values.put(MatchContract.MatchEntry.COLUMN_LOGO_A, new byte[0]);
+        values.put(MatchContract.MatchEntry.COLUMN_LOGO_B, new byte[0]);
 
         Uri newUri = getContentResolver().insert(MatchContract.MatchEntry.CONTENT_URI, values);
     }
@@ -263,7 +266,9 @@ public class MainActivity extends AppCompatActivity
                 MatchContract.MatchEntry.COLUMN_NAME_B,
                 MatchContract.MatchEntry.COLUMN_RES_A,
                 MatchContract.MatchEntry.COLUMN_RES_B,
-                MatchContract.MatchEntry.COLUMN_TOTAL_RES
+                MatchContract.MatchEntry.COLUMN_TOTAL_RES,
+                MatchContract.MatchEntry.COLUMN_LOGO_A,
+                MatchContract.MatchEntry.COLUMN_LOGO_B
         };
         return new CursorLoader(this,
                 MatchContract.MatchEntry.CONTENT_URI,

@@ -9,6 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+import static com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract.MatchEntry.TABLE_NAME;
 
 /**
  * Created by lucas on 12/11/2016.
@@ -43,13 +48,13 @@ public class MatchProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match){
             case GAMES:
-                cursor = database.query(MatchContract.MatchEntry.TABLE_NAME, projection, selection,
+                cursor = database.query(TABLE_NAME, projection, selection,
                         selectionArgs, null, null, sortOrder);
                 break;
             case GAME_ID:
                 selection = MatchContract.MatchEntry._ID + "=?";
                 selectionArgs = new String[]{ String.valueOf(ContentUris.parseId(uri))};
-                cursor = database.query(MatchContract.MatchEntry.TABLE_NAME, projection, selection,
+                cursor = database.query(TABLE_NAME, projection, selection,
                         selectionArgs, null, null, sortOrder);
                 break;
             default:
@@ -90,7 +95,10 @@ public class MatchProvider extends ContentProvider {
     private Uri insertMatch(Uri uri, ContentValues contentValues){
         // TODO: check data type?
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
-        long id = database.insert(MatchContract.MatchEntry.TABLE_NAME, null, contentValues);
+        long id = database.insert(TABLE_NAME, null, contentValues);
+
+        Cursor dbCursor = database.query(TABLE_NAME, null, null, null, null, null, null);
+        String[] columnNames = dbCursor.getColumnNames();
 
         if(id == -1){
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
@@ -112,13 +120,13 @@ public class MatchProvider extends ContentProvider {
         switch (match) {
             case GAMES:
                 // Delete all rows that match the selection and selection args
-                rowsDeleted = database.delete(MatchContract.MatchEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = database.delete(TABLE_NAME, selection, selectionArgs);
                 break;
             case GAME_ID:
                 // Delete a single row given by the ID in the URI
                 selection = MatchContract.MatchEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                rowsDeleted = database.delete(MatchContract.MatchEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = database.delete(TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
@@ -155,7 +163,7 @@ public class MatchProvider extends ContentProvider {
         // TODO: Update the selected game in the match database table with the given ContentValues
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
         // Perform the update on the database and get the number of rows affected
-        int rowsUpdated = database.update(MatchContract.MatchEntry.TABLE_NAME, values, selection, selectionArgs);
+        int rowsUpdated = database.update(TABLE_NAME, values, selection, selectionArgs);
 
         // If 1 or more rows were updated, then notify all listeners that the data at the
         // given URI has changed

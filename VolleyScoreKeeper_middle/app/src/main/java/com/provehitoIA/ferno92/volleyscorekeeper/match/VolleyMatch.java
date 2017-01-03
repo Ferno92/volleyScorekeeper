@@ -74,6 +74,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     int mCurrentFragment = -1;
     byte[] mImageA;
     byte[] mImageB;
+    ArrayList<String> mPositions;
 
     ArrayList<String> lineUpA = new ArrayList<String>();
     ArrayList<String> lineUpB = new ArrayList<String>();
@@ -183,6 +184,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         this.teamBName = getIntent().getExtras().getString("teamB");
         this.mImageA = getIntent().getExtras().getByteArray("logoA");
         this.mImageB = getIntent().getExtras().getByteArray("logoB");
+        this.mPositions = getIntent().getExtras().getStringArrayList("positions");
         // Set lineup if not empty
         setLineUp();
     }
@@ -491,7 +493,13 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, "25 - 23, 25 - 18, 20 - 25, 22 - 25, 15 - 2");
         values.put(MatchContract.MatchEntry.COLUMN_LOGO_A, mImageA);
         values.put(MatchContract.MatchEntry.COLUMN_LOGO_B, mImageB);
-
+        if(mPositions.size() == 2) {
+            values.put(MatchContract.MatchEntry.COLUMN_LATITUDE, mPositions.get(0));
+            values.put(MatchContract.MatchEntry.COLUMN_LONGITUDE, mPositions.get(1));
+        }else{
+            values.put(MatchContract.MatchEntry.COLUMN_LATITUDE, "");
+            values.put(MatchContract.MatchEntry.COLUMN_LONGITUDE, "");
+        }
         JSONArray mJSONArray = new JSONArray(Arrays.asList(totalResult));
         String totalResultString = mJSONArray.toString();
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, totalResultString);

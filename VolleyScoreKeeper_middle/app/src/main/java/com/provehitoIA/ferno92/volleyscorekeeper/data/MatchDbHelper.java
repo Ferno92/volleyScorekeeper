@@ -16,7 +16,7 @@ public class MatchDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "championship.db";
 
     // Database version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public MatchDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,7 +32,9 @@ public class MatchDbHelper extends SQLiteOpenHelper {
                 + MatchEntry.COLUMN_RES_B + " INTEGER, "
                 + MatchEntry.COLUMN_TOTAL_RES + " TEXT, "
                 + MatchEntry.COLUMN_LOGO_A + " BLOB, "
-                + MatchEntry.COLUMN_LOGO_B + " BLOB)";
+                + MatchEntry.COLUMN_LOGO_B + " BLOB, "
+                + MatchEntry.COLUMN_LATITUDE + "TEXT, "
+                + MatchEntry.COLUMN_LONGITUDE + "TEXT)";
 
         db.execSQL(SQL_CREATE_MATCHES_TABLE);
 
@@ -40,10 +42,30 @@ public class MatchDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        boolean missingLogos = true;
+        boolean missingPositions = true;
+        Cursor ti = db.rawQuery("PRAGMA table_info(" + MatchEntry.TABLE_NAME + ")", null);
+        if ( ti.moveToFirst() ) {
+            do {
+                if(ti.getString(1).equals(MatchEntry.COLUMN_LOGO_A)){
+                    missingLogos = false;
+                }
+                if(ti.getString(1).equals(MatchEntry.COLUMN_LATITUDE)){
+                    missingPositions = false;
+                }
+                System.out.println("col: " + ti.getString(1));
+            } while (ti.moveToNext());
+        }
         // If you need to add a column
         if (newVersion > oldVersion) {
-            db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LOGO_A + " BLOB");
-            db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LOGO_B + " BLOB");
+            if(missingLogos) {
+                db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LOGO_A + " BLOB");
+                db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LOGO_B + " BLOB");
+            }
+            if(missingPositions){
+                db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LATITUDE + " TEXT");
+                db.execSQL("ALTER TABLE " + MatchEntry.TABLE_NAME + " ADD COLUMN " + MatchEntry.COLUMN_LONGITUDE + " TEXT");
+            }
         }
     }
 

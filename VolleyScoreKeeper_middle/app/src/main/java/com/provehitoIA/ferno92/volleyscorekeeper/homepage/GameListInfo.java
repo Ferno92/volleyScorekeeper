@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +38,8 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import static com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract.MatchEntry.COLUMN_LONGITUDE;
+
 
 /**
  * Created by lucas on 13/11/2016.
@@ -54,6 +57,8 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
     CallbackManager callbackManager;
     ShareDialog shareDialog;
     String[] totalResultsStringArray;
+    String mLatitude = null;
+    String mLongitude = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +98,20 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
                 shareOnGoogle();
             }
         });
+
+        Button gymPosition = (Button) findViewById(R.id.gym_position);
+        gymPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194?q=37.7749,-122.4194");
+                Uri gmmIntentUri = Uri.parse("geo:" + mLatitude + "," + mLongitude + "?q=" + mLatitude + "," + mLongitude );
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null && mLatitude != null) {
+                    startActivity(mapIntent);
+                }
+            }
+        });
     }
 
     @Override
@@ -107,7 +126,9 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
                 MatchContract.MatchEntry.COLUMN_RES_B,
                 MatchContract.MatchEntry.COLUMN_TOTAL_RES,
                 MatchContract.MatchEntry.COLUMN_LOGO_A,
-                MatchContract.MatchEntry.COLUMN_LOGO_B
+                MatchContract.MatchEntry.COLUMN_LOGO_B,
+                MatchContract.MatchEntry.COLUMN_LATITUDE,
+                MatchContract.MatchEntry.COLUMN_LONGITUDE
         };
 
         // This loader will execute the ContentProvider's query method on a background thread
@@ -130,6 +151,8 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
             int resAColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_RES_A);
             int resBColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_RES_B);
             int resultsColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_TOTAL_RES);
+            int latitudeColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_LATITUDE);
+            int longitudeColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_LONGITUDE);
 
             // Extract out the value from the Cursor for the given column index
             String nameA = cursor.getString(nameTeamAColumnIndex);
@@ -143,6 +166,17 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
             tResA.setText("" + resA);
             tResB.setText("" + resB);
 
+            if(latitudeColumnIndex != -1){
+                if(cursor.getString(latitudeColumnIndex) != null || cursor.getString(latitudeColumnIndex) != "") {
+                    mLatitude = cursor.getString(latitudeColumnIndex);
+                    mLongitude = cursor.getString(longitudeColumnIndex);
+                }
+            }
+
+            if(mLatitude == null){
+                Button gymPosition = (Button) findViewById(R.id.gym_position);
+                gymPosition.setVisibility(View.GONE);
+            }
             try {
                 JSONArray resultsArray = new JSONArray(totalResultsString);
                 totalResultsStringArray = new String[resultsArray.length()];
@@ -221,6 +255,7 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
             finish();
         }
     }
+
     private void showDeleteConfirmationDialog(){
         AlertDialog.Builder alertLineUp = new AlertDialog.Builder(this);
         alertLineUp.setTitle("Delete");

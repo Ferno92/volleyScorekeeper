@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.android.ferno92.volleyscorekeeper.com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity">
+    tools:context="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

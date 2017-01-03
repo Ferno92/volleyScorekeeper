@@ -101,14 +101,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(com.provehitoIA.ferno92.volleyscorekeeper.R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, com.provehitoIA.ferno92.volleyscorekeeper.R.string.navigation_drawer_open, com.provehitoIA.ferno92.volleyscorekeeper.R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+//        DrawerLayout drawer = (DrawerLayout) findViewById(com.provehitoIA.ferno92.volleyscorekeeper.R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, com.provehitoIA.ferno92.volleyscorekeeper.R.string.navigation_drawer_open, com.provehitoIA.ferno92.volleyscorekeeper.R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(com.provehitoIA.ferno92.volleyscorekeeper.R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        NavigationView navigationView = (NavigationView) findViewById(com.provehitoIA.ferno92.volleyscorekeeper.R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
 
         ListView gameListView = (ListView) findViewById(com.provehitoIA.ferno92.volleyscorekeeper.R.id.list);
         View emptyView = findViewById(com.provehitoIA.ferno92.volleyscorekeeper.R.id.empty_view);
@@ -171,8 +171,8 @@ public class MainActivity extends AppCompatActivity
         JSONArray mJSONArray = new JSONArray(Arrays.asList(fakeTotalResult));
         String totalResultString = mJSONArray.toString();
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, totalResultString);
-        values.put(MatchContract.MatchEntry.COLUMN_LOGO_A, new byte[0]);
-        values.put(MatchContract.MatchEntry.COLUMN_LOGO_B, new byte[0]);
+        values.put(MatchContract.MatchEntry.COLUMN_LOGO_A, (byte[]) null);
+        values.put(MatchContract.MatchEntry.COLUMN_LOGO_B, (byte[]) null);
 
         Uri newUri = getContentResolver().insert(MatchContract.MatchEntry.CONTENT_URI, values);
     }

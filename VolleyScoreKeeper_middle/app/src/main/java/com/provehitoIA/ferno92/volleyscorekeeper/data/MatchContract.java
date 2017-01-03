@@ -30,5 +30,7 @@ public final class MatchContract {
         public final static String COLUMN_TOTAL_RES = "total_results";
         public final static String COLUMN_LOGO_A = "logo_a";
         public final static String COLUMN_LOGO_B = "logo_b";
+        public final static String COLUMN_LATITUDE = "latitude";
+        public final static String COLUMN_LONGITUDE = "longitude";
     }
 }

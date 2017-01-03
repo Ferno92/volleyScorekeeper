@@ -218,6 +218,14 @@
                 android:src="@mipmap/ic_google_plus"/>
         </LinearLayout>
 
+        <Button
+            android:id="@+id/gym_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Show gym in maps"
+            android:backgroundTint="@color/colorAccent"/>
+
     </LinearLayout>
     <!-- Empty view for the list -->
     <RelativeLayout

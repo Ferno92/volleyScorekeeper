@@ -88,12 +88,12 @@ public class MatchCursorAdapter extends CursorAdapter {
             byte[] logoABytes = cursor.getBlob(logoAColumnIndex);
             byte[] logoBBytes = cursor.getBlob(logoBColumnIndex);
 
-            if(!Arrays.equals(new byte[0], logoABytes)){
+            if(!Arrays.equals(new byte[0], logoABytes) && logoABytes != null){
                 Bitmap bitmap1 = BitmapFactory.decodeByteArray(logoABytes, 0, logoABytes.length);
                 teamALogo.setImageBitmap(bitmap1);
             }
 
-            if(!Arrays.equals(new byte[0], logoBBytes)){
+            if(!Arrays.equals(new byte[0], logoBBytes) && logoBBytes != null){
                 Bitmap bitmap2 = BitmapFactory.decodeByteArray(logoBBytes, 0, logoBBytes.length);
                 teamBLogo.setImageBitmap(bitmap2);
 

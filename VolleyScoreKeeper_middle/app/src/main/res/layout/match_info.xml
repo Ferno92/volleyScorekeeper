@@ -117,10 +117,10 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
-                android:text="Edit Line-Up"
+                android:text="Get Gym position"
                 android:layout_margin="5dp"
                 android:backgroundTint="@color/colorAccent"
-                android:onClick="editLineUp"
+                android:onClick="getLocation"
                 />
         </LinearLayout>
     </LinearLayout>

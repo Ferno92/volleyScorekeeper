@@ -1,6 +1,7 @@
 package com.provehitoIA.ferno92.volleyscorekeeper.match;
 
 import android.app.FragmentTransaction;
+import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +32,8 @@ import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -44,7 +48,11 @@ import com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.net.Socket;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -75,6 +83,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     byte[] mImageA;
     byte[] mImageB;
     ArrayList<String> mPositions;
+    Menu mMenu;
 
     ArrayList<String> lineUpA = new ArrayList<String>();
     ArrayList<String> lineUpB = new ArrayList<String>();
@@ -89,6 +98,14 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
     MatchPagerAdapter adapterViewPager;
     ViewPager vpPager;
+    private com.github.nkzawa.socketio.client.Socket mSocket;
+
+    {
+        try {
+            mSocket = IO.socket("http://192.168.1.106:80");
+        } catch (URISyntaxException e) {
+        }
+    }
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -122,11 +139,11 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                 //                Toast.makeText(VolleyMatch.this,
                 //                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();
                 mCurrentFragment = position;
-                if(position == 0){
+                if (position == 0) {
                     setTitle("Play Match");
-                }else if(adapterViewPager.getIsEditingLineUp()){
+                } else if (adapterViewPager.getIsEditingLineUp()) {
                     setTitle("Edit Line Up");
-                }else{
+                } else {
                     setTitle("Current Line Up");
                 }
             }
@@ -163,8 +180,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                             lineUpB.clear();
                         } else {
 //                            if(!editLineUpFragment.checkLineUpRepeated()) {
-                                adapterViewPager.setIsEditingLineUp(false);
-                                editLineUpFragment.getSecondPageListener().onSwitchToNextFragment();
+                            adapterViewPager.setIsEditingLineUp(false);
+                            editLineUpFragment.getSecondPageListener().onSwitchToNextFragment();
 //                            }
                         }
                     }
@@ -315,6 +332,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                 }
             }
         }
+        syncGame();
     }
 
     public void addOneForTeam(View v) {
@@ -417,6 +435,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                 }
             }
         }
+        syncGame();
     }
 
     private void showSetResult(int scoreTeamA, int scoreTeamB, int i) {
@@ -481,6 +500,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             lineUpA = new ArrayList<>(mSavedLineUpA);
             lineUpB = new ArrayList<>(mSavedLineUpB);
         }
+        syncGame();
     }
 
     public void saveMatch(View v) {
@@ -493,10 +513,10 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, "25 - 23, 25 - 18, 20 - 25, 22 - 25, 15 - 2");
         values.put(MatchContract.MatchEntry.COLUMN_LOGO_A, mImageA);
         values.put(MatchContract.MatchEntry.COLUMN_LOGO_B, mImageB);
-        if(mPositions.size() == 2) {
+        if (mPositions.size() == 2) {
             values.put(MatchContract.MatchEntry.COLUMN_LATITUDE, mPositions.get(0));
             values.put(MatchContract.MatchEntry.COLUMN_LONGITUDE, mPositions.get(1));
-        }else{
+        } else {
             values.put(MatchContract.MatchEntry.COLUMN_LATITUDE, "");
             values.put(MatchContract.MatchEntry.COLUMN_LONGITUDE, "");
         }
@@ -559,11 +579,25 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        int id = item.getItemId();
+
+        switch (id) {
             case android.R.id.home:
-                // do something useful
                 exitByBackKey();
                 return (true);
+            case R.id.connect:
+                connectGame();
+                MenuItem disconnectItem = (MenuItem) mMenu.findItem(R.id.disconnect);
+                disconnectItem.setVisible(true);
+                item.setVisible(false);
+                return true;
+            case R.id.disconnect:
+                disconnectGame();
+                MenuItem connectItem = (MenuItem) mMenu.findItem(R.id.connect);
+                connectItem.setVisible(true);
+                item.setVisible(false);
+                return true;
+
         }
 
         return (super.onOptionsItemSelected(item));
@@ -883,5 +917,98 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
         setView();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        this.mMenu = menu;
+        getMenuInflater().inflate(R.menu.connect_game_menu, menu);
+        return true;
+    }
+
+    private void disconnectGame() {
+        mSocket.disconnect();
+    }
+
+    private void syncGame(){
+        JSONObject gameData = new JSONObject();
+        try {
+            gameData.put("scoreA", scoreTeamA);
+            gameData.put("scoreB", scoreTeamB);
+            gameData.put("setScoreA", scoreSetTeamA);
+            gameData.put("setScoreB", scoreSetTeamB);
+            ArrayList<String> list = new ArrayList<String>();
+            for(int i = 0; i < totalResult.length; i++){
+                list.add(totalResult[i]);
+            }
+            gameData.put("setResults", new JSONArray(list));
+            gameData.put("lineUpA", new JSONArray(lineUpA));
+            gameData.put("lineUpB", new JSONArray(lineUpB));
+            gameData.put("positions", new JSONArray(mPositions));
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        mSocket.emit("sync", gameData);
+    }
+
+    private void connectGame() {
+        mSocket.connect();
+        JSONObject gameData = new JSONObject();
+        //TODO: divide data to send only once and not. Change lineup to array as total results before send
+        try {
+            gameData.put("nameA", teamAName);
+            gameData.put("nameB", teamBName);
+            gameData.put("scoreA", scoreTeamA);
+            gameData.put("scoreB", scoreTeamB);
+            gameData.put("setScoreA", scoreSetTeamA);
+            gameData.put("setScoreB", scoreSetTeamB);
+            ArrayList<String> list = new ArrayList<String>();
+            for(int i = 0; i < totalResult.length; i++){
+                list.add(totalResult[i]);
+            }
+            gameData.put("setResults", new JSONArray(list));
+            gameData.put("lineUpA", new JSONArray(lineUpA));
+            gameData.put("lineUpB", new JSONArray(lineUpB));
+            gameData.put("positions", new JSONArray(mPositions));
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        mSocket.emit("new game", gameData);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disconnectGame();
+//        mSocket.off("new message", onNewMessage);
+    }
+
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String username;
+                    String message;
+                    try {
+                        username = data.getString("username");
+                        message = data.getString("message");
+                    } catch (JSONException e) {
+                        return;
+                    }
+
+                    // add the message to view
+//                    addMessage(username, message);
+                }
+            });
+        }
+    };
 }
 

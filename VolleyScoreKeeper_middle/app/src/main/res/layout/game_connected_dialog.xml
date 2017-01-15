@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The game is now connected!"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="Copy your game to clipboard or share with your friends."/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/copy_clipboard"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@mipmap/ic_copy_url"
+            android:padding="0dp">
+        </ImageButton>
+        <EditText
+            android:id="@+id/url_on_dialog"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_weight="2"
+            android:gravity="left"
+            android:text="Copy url"
+            />
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -57,6 +58,7 @@ public class MatchInfo extends AppCompatActivity {
     byte[] mImageB;
     boolean mHasGPSpermission;
     ArrayList<String> mPositions = new ArrayList<>();
+    Location mLastKnownLocation;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -417,10 +419,10 @@ public class MatchInfo extends AppCompatActivity {
     }
 
     public void getLocation(View v) {
-        if(mHasGPSpermission) {
+        if (mHasGPSpermission) {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
+            String locationProvider = LocationManager.NETWORK_PROVIDER;
 //            String locationProvider = LocationManager.GPS_PROVIDER;
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -433,20 +435,24 @@ public class MatchInfo extends AppCompatActivity {
                 // for ActivityCompat#requestPermissions for more details.
 
                 return;
-            }else {
-                Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+            } else {
+                mLastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
                 mPositions.clear();
-                mPositions.add(String.valueOf(lastKnownLocation.getLatitude()));
-                mPositions.add(String.valueOf(lastKnownLocation.getLongitude()));
-                Context context = getApplicationContext();
-                CharSequence text = "Gym location saved";
-                int duration = Toast.LENGTH_SHORT;
+                if (mLastKnownLocation == null) {
+                    getLocation(null);
+                } else {
+                    mPositions.add(String.valueOf(mLastKnownLocation.getLatitude()));
+                    mPositions.add(String.valueOf(mLastKnownLocation.getLongitude()));
+                    Context context = getApplicationContext();
+                    CharSequence text = "Gym location saved";
+                    int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
             }
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
     }
 

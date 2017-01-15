@@ -12,4 +12,16 @@
         android:title="Disconnect streaming"
         app:showAsAction="never"
         android:visible="false"/>
+    <item
+        android:id="@+id/show_game_in_browser"
+        android:orderInCategory="101"
+        android:title="Show game in browser"
+        app:showAsAction="never"
+        android:visible="false"/>
+    <item
+        android:id="@+id/share_game_url"
+        android:orderInCategory="101"
+        android:title="Share game URL"
+        app:showAsAction="never"
+        android:visible="false"/>
 </menu>

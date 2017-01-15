@@ -2,7 +2,9 @@ package com.provehitoIA.ferno92.volleyscorekeeper.match;
 
 import android.app.FragmentTransaction;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -17,10 +19,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -84,6 +89,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     byte[] mImageB;
     ArrayList<String> mPositions;
     Menu mMenu;
+    String mGameId;
+    boolean mGamePaired = false;
 
     ArrayList<String> lineUpA = new ArrayList<String>();
     ArrayList<String> lineUpB = new ArrayList<String>();
@@ -98,11 +105,13 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
     MatchPagerAdapter adapterViewPager;
     ViewPager vpPager;
+    //    private String mServerUrl = "http://192.168.1.110:80";
+    private String mServerUrl = "https://vsknodeserver.herokuapp.com/";
     private com.github.nkzawa.socketio.client.Socket mSocket;
 
     {
         try {
-            mSocket = IO.socket("http://192.168.1.106:80");
+            mSocket = IO.socket(mServerUrl);
         } catch (URISyntaxException e) {
         }
     }
@@ -580,6 +589,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        MenuItem showGameInBrowser = (MenuItem) mMenu.findItem(R.id.show_game_in_browser);
+        MenuItem shareGame = (MenuItem) mMenu.findItem(R.id.share_game_url);
 
         switch (id) {
             case android.R.id.home:
@@ -589,18 +600,38 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                 connectGame();
                 MenuItem disconnectItem = (MenuItem) mMenu.findItem(R.id.disconnect);
                 disconnectItem.setVisible(true);
+                showGameInBrowser.setVisible(true);
+                shareGame.setVisible(true);
                 item.setVisible(false);
                 return true;
             case R.id.disconnect:
                 disconnectGame();
                 MenuItem connectItem = (MenuItem) mMenu.findItem(R.id.connect);
+                showGameInBrowser.setVisible(false);
+                shareGame.setVisible(false);
                 connectItem.setVisible(true);
                 item.setVisible(false);
                 return true;
-
+            case R.id.show_game_in_browser:
+                String url = mServerUrl + "?game=" + mGameId;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+                return true;
+            case R.id.share_game_url:
+                shareGameUrl();
+                return true;
         }
 
         return (super.onOptionsItemSelected(item));
+    }
+
+    private void shareGameUrl() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mServerUrl + "?game=" + mGameId);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent.createChooser(sendIntent, "Share"));
     }
 
     @Override
@@ -927,10 +958,12 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     }
 
     private void disconnectGame() {
+        mSocket.emit("disconnected game", mGameId);
         mSocket.disconnect();
+        mGamePaired = false;
     }
 
-    private void syncGame(){
+    private void syncGame() {
         JSONObject gameData = new JSONObject();
         try {
             gameData.put("scoreA", scoreTeamA);
@@ -938,13 +971,14 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             gameData.put("setScoreA", scoreSetTeamA);
             gameData.put("setScoreB", scoreSetTeamB);
             ArrayList<String> list = new ArrayList<String>();
-            for(int i = 0; i < totalResult.length; i++){
+            for (int i = 0; i < totalResult.length; i++) {
                 list.add(totalResult[i]);
             }
             gameData.put("setResults", new JSONArray(list));
             gameData.put("lineUpA", new JSONArray(lineUpA));
             gameData.put("lineUpB", new JSONArray(lineUpB));
             gameData.put("positions", new JSONArray(mPositions));
+            gameData.put("id", mGameId);
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -965,7 +999,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             gameData.put("setScoreA", scoreSetTeamA);
             gameData.put("setScoreB", scoreSetTeamB);
             ArrayList<String> list = new ArrayList<String>();
-            for(int i = 0; i < totalResult.length; i++){
+            for (int i = 0; i < totalResult.length; i++) {
                 list.add(totalResult[i]);
             }
             gameData.put("setResults", new JSONArray(list));
@@ -978,6 +1012,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             e.printStackTrace();
         }
         mSocket.emit("new game", gameData);
+        mSocket.on("pairing game", onPairingGame);
     }
 
     @Override
@@ -987,7 +1022,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 //        mSocket.off("new message", onNewMessage);
     }
 
-    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+    private Emitter.Listener onPairingGame = new Emitter.Listener() {
 
         @Override
         public void call(final Object... args) {
@@ -995,11 +1030,50 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
-                    String username;
-                    String message;
+                    String id;
+                    String nameA;
+                    String nameB;
                     try {
-                        username = data.getString("username");
-                        message = data.getString("message");
+                        id = data.getString("id");
+                        nameA = data.getString("nameA");
+                        nameB = data.getString("nameB");
+                        if (nameA.equals(teamAName) && nameB.equals(teamBName) && !mGamePaired) {
+                            mGameId = id;
+//                            Toast.makeText(VolleyMatch.this,
+//                                    "Game Paired at url: " + mServerUrl + "?game=" + id, Toast.LENGTH_SHORT).show();
+                            final String urlString = mServerUrl + "?game=" + id;
+
+                            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(VolleyMatch.this);
+                            builder.setTitle("Game Connected");
+                            LayoutInflater inflater = (LayoutInflater)getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+                            final View v = inflater.inflate(R.layout.game_connected_dialog, null);
+                            builder.setView(v);
+                            ImageButton copyToClipboard = (ImageButton) v.findViewById(R.id.copy_clipboard);
+                            copyToClipboard.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ClipboardManager clipboard = (ClipboardManager)getApplicationContext().getSystemService(getApplicationContext().CLIPBOARD_SERVICE);
+                                    ClipData clip = ClipData.newPlainText("",urlString);
+                                    clipboard.setPrimaryClip(clip);
+                                    Toast.makeText(getApplicationContext(), "Copied to clipboard!", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            final EditText urlEditText = (EditText) v.findViewById(R.id.url_on_dialog);
+                            urlEditText.setText(urlString);
+                            urlEditText.setEnabled(false);
+                            builder.setPositiveButton("Share", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    shareGameUrl();
+                                }
+                            });
+                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                }
+                            });
+                            builder.show();
+                            mGamePaired = true;
+                        }
                     } catch (JSONException e) {
                         return;
                     }

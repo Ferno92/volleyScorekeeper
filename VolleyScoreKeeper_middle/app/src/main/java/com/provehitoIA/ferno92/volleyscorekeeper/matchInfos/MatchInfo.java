@@ -79,10 +79,8 @@ public class MatchInfo extends AppCompatActivity {
         if (h > 600 && w > 600) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-            LinearLayout editLineupButtonWrapper = (LinearLayout) findViewById(R.id.lineup_button_wrapper);
             ImageView emptyCourtImage = (ImageView) findViewById(R.id.empty_court);
             emptyCourtImage.setVisibility(View.GONE);
-            editLineupButtonWrapper.setVisibility(View.GONE);
 
             ImageView courtWithNumberImage = (ImageView) findViewById(R.id.court_with_number_info);
             courtWithNumberImage.setVisibility(View.VISIBLE);

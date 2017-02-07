@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/lineup_name_a"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:text="Team ATeam ATeam A"
+        android:layout_alignParentLeft="true"
+        android:textSize="20sp"
+        android:layout_margin="5dp"
+        android:rotation="+90"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="1"/>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/current_lineup_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/volleyball_court_empty"
+        android:orientation="horizontal"
+        android:layout_toRightOf="@id/lineup_name_a"
+        android:layout_toLeftOf="@+id/lineup_name_b">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="100dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tp5a"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:text="29"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/tp6a"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="17"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/tp1a"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="3"
+                android:textSize="30dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tp4a"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:text="4"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tp3a"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="1"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tp2a"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="7"
+                    android:textSize="30dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="80dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tp2b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:text="10"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tp3b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="23"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tp4b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="8"
+                    android:textSize="30dp" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="100dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tp1b"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:text="25"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/tp6b"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="18"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/tp5b"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="14"
+                android:textSize="30dp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/lineup_name_b"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Team B"
+        android:layout_alignParentRight="true"
+        android:textSize="20sp"
+        android:layout_margin="5dp"
+        android:rotation="-90"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="1"/>
+</RelativeLayout>

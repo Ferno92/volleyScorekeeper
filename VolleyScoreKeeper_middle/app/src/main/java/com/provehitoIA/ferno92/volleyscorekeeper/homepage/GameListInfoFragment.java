@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,6 +53,8 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
     ShareDialog shareDialog;
     String[] totalResultsStringArray;
     Context mApplicationContext;
+    String mLatitude = null;
+    String mLongitude = null;
 
     public GameListInfoFragment(){
 
@@ -71,7 +74,7 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
         tNameB = (TextView) rootView.findViewById(R.id.team_b_name);
         tResA = (TextView) rootView.findViewById(R.id.team_a_score);
         tResB = (TextView) rootView.findViewById(R.id.team_b_score);
-        getLoaderManager().initLoader(MATCH_LOADER, null, this);
+        getLoaderManager().restartLoader(MATCH_LOADER, null, this);
     }
 
     @Override
@@ -109,6 +112,8 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
             int resAColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_RES_A);
             int resBColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_RES_B);
             int resultsColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_TOTAL_RES);
+            int latitudeColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_LATITUDE);
+            int longitudeColumnIndex = cursor.getColumnIndex(MatchContract.MatchEntry.COLUMN_LONGITUDE);
 
             // Extract out the value from the Cursor for the given column index
             String nameA = cursor.getString(nameTeamAColumnIndex);
@@ -121,6 +126,18 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
             tNameB.setText(nameB);
             tResA.setText("" + resA);
             tResB.setText("" + resB);
+
+            if(latitudeColumnIndex != -1){
+                if(cursor.getString(latitudeColumnIndex) != null || cursor.getString(latitudeColumnIndex) != "") {
+                    mLatitude = cursor.getString(latitudeColumnIndex);
+                    mLongitude = cursor.getString(longitudeColumnIndex);
+                }
+            }
+
+            if(mLatitude == null){
+                Button gymPosition = (Button) rootView.findViewById(R.id.gym_position);
+                gymPosition.setVisibility(View.GONE);
+            }
 
             try {
                 JSONArray resultsArray = new JSONArray(totalResultsString);
@@ -268,4 +285,6 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
         builder.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(builder);
     }
+
+
 }

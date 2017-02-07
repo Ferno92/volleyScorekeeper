@@ -41,6 +41,7 @@
         <activity
             android:name="com.provehitoIA.ferno92.volleyscorekeeper.matchInfos.MatchInfo"
             android:label="Match Info"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:parentActivityName="com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity">
 
         </activity>

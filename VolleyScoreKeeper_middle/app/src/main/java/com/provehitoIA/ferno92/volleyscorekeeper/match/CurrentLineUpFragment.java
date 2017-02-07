@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,9 +56,16 @@ public class CurrentLineUpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
+        int h = getDeviceHeight();
+        int w = getDeviceWidth();
+        if(h > 600 && w > 600){
+            mRootView = inflater.inflate(R.layout.current_line_up_horizontal,
+                    container, false);
+        }else{
+            mRootView = inflater.inflate(R.layout.current_line_up,
+                    container, false);
+        }
 
-        mRootView = inflater.inflate(R.layout.current_line_up,
-                container, false);
         getLineUp();
         return mRootView;
     }
@@ -78,6 +86,21 @@ public class CurrentLineUpFragment extends Fragment {
         nameBTextView.setText(mNameB);
 
         setLineUpView();
+    }
+
+    public int getDeviceHeight(){
+        //Get height of device
+        DisplayMetrics dMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
+        float density = dMetrics.density;
+        return Math.round(dMetrics.heightPixels / density);
+    }
+    public int getDeviceWidth(){
+        //Get width of device
+        DisplayMetrics dMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
+        float density = dMetrics.density;
+        return Math.round(dMetrics.widthPixels / density);
     }
 
 

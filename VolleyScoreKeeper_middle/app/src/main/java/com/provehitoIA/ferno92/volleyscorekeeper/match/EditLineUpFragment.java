@@ -2,6 +2,7 @@ package com.provehitoIA.ferno92.volleyscorekeeper.match;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +54,15 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-        mRootView = inflater.inflate(R.layout.edit_line_up,
-                container, false);
+        int h = getDeviceHeight();
+        int w = getDeviceWidth();
+        if (h > 600 && w > 600) {
+            mRootView = inflater.inflate(R.layout.edit_line_up_horizontal,
+                    container, false);
+        } else {
+            mRootView = inflater.inflate(R.layout.edit_line_up,
+                    container, false);
+        }
         Button lineUpEditedButton = (Button) mRootView.findViewById(R.id.lineup_edited_button);
         lineUpEditedButton.setVisibility(View.GONE);
 
@@ -69,15 +76,31 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
         return mRootView;
     }
 
+    public int getDeviceHeight() {
+        //Get height of device
+        DisplayMetrics dMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
+        float density = dMetrics.density;
+        return Math.round(dMetrics.heightPixels / density);
+    }
+
+    public int getDeviceWidth() {
+        //Get width of device
+        DisplayMetrics dMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
+        float density = dMetrics.density;
+        return Math.round(dMetrics.widthPixels / density);
+    }
+
     private void setLineUpRepeatedControls() {
         LinearLayout teamA = (LinearLayout) mRootView.findViewById(R.id.team_a);
-        for ( int i = 0; i < teamA.getChildCount(); i++) {
+        for (int i = 0; i < teamA.getChildCount(); i++) {
             final int index = i;
             if (teamA.getChildAt(i) instanceof LinearLayout) {
                 LinearLayout linearLayoutChild = (LinearLayout) teamA.getChildAt(i);
                 for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                     if (linearLayoutChild.getChildAt(j) instanceof EditText) {
-                        final EditText editTextView = (EditText)linearLayoutChild.getChildAt(j);
+                        final EditText editTextView = (EditText) linearLayoutChild.getChildAt(j);
 
                         editTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                             @Override
@@ -85,7 +108,7 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
                                 if (!hasFocus) {
                                     boolean repeated = false;
                                     for (int k = 0; k < mLineUpAToCheck.size(); k++) {
-                                        if(mLineUpAToCheck.get(k).equals(editTextView.getText().toString())){
+                                        if (mLineUpAToCheck.get(k).equals(editTextView.getText().toString())) {
                                             repeated = true;
                                             // Show alert
                                             ViewGroup row = (ViewGroup) editTextView.getParent();
@@ -98,7 +121,7 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
                                             }
                                         }
                                     }
-                                    if(!repeated){
+                                    if (!repeated) {
                                         mLineUpAToCheck.add(index, editTextView.getText().toString());
                                         ViewGroup row = (ViewGroup) editTextView.getParent();
                                         for (int itemPos = 0; itemPos < row.getChildCount(); itemPos++) {
@@ -117,13 +140,13 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
             }
         }
         LinearLayout teamB = (LinearLayout) mRootView.findViewById(R.id.team_b);
-        for ( int i = 0; i < teamB.getChildCount(); i++) {
+        for (int i = 0; i < teamB.getChildCount(); i++) {
             final int index = i;
             if (teamB.getChildAt(i) instanceof LinearLayout) {
                 LinearLayout linearLayoutChild = (LinearLayout) teamB.getChildAt(i);
                 for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                     if (linearLayoutChild.getChildAt(j) instanceof EditText) {
-                        final EditText editTextView = (EditText)linearLayoutChild.getChildAt(j);
+                        final EditText editTextView = (EditText) linearLayoutChild.getChildAt(j);
 
                         editTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                             @Override
@@ -131,7 +154,7 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
                                 if (!hasFocus) {
                                     boolean repeated = false;
                                     for (int k = 0; k < mLineUpBToCheck.size(); k++) {
-                                        if(mLineUpBToCheck.get(k).equals(editTextView.getText().toString())){
+                                        if (mLineUpBToCheck.get(k).equals(editTextView.getText().toString())) {
                                             repeated = true;
                                             // Show alert
                                             ViewGroup row = (ViewGroup) editTextView.getParent();
@@ -144,7 +167,7 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
                                             }
                                         }
                                     }
-                                    if(!repeated){
+                                    if (!repeated) {
                                         mLineUpBToCheck.add(index, editTextView.getText().toString());
                                         ViewGroup row = (ViewGroup) editTextView.getParent();
                                         for (int itemPos = 0; itemPos < row.getChildCount(); itemPos++) {
@@ -164,16 +187,16 @@ public class EditLineUpFragment extends Fragment implements SecondPageFragmentLi
         }
     }
 
-    public boolean checkLineUpRepeated(){
+    public boolean checkLineUpRepeated() {
         boolean isRepeated = false;
-        for(int i = 0; i < mLineUpAToCheck.size(); i++){
-            if(mLineUpAToCheck.get(i).equals("-1")){
+        for (int i = 0; i < mLineUpAToCheck.size(); i++) {
+            if (mLineUpAToCheck.get(i).equals("-1")) {
                 isRepeated = true;
             }
         }
-        if(!isRepeated){
-            for(int i = 0; i < mLineUpBToCheck.size(); i++){
-                if(mLineUpBToCheck.get(i).equals("-1")){
+        if (!isRepeated) {
+            for (int i = 0; i < mLineUpBToCheck.size(); i++) {
+                if (mLineUpBToCheck.get(i).equals("-1")) {
                     isRepeated = true;
                 }
             }

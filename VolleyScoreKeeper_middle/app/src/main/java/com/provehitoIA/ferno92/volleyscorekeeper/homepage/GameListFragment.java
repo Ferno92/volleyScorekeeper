@@ -19,6 +19,7 @@ public class GameListFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState){
         View rootView = inflater.inflate(com.provehitoIA.ferno92.volleyscorekeeper.R.layout.fragment_game_list,
                 container, false);
+        
         return rootView;
     }
 

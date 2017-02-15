@@ -1,7 +1,6 @@
 package com.provehitoIA.ferno92.volleyscorekeeper.homepage;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,9 +46,9 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
     TextView tNameB;
     TextView tResA;
     TextView tResB;
-    View rootView;
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
+    View mRootView;
+    CallbackManager mCallbackManager;
+    ShareDialog mShareDialog;
     String[] totalResultsStringArray;
     Context mApplicationContext;
     String mLatitude = null;
@@ -62,18 +60,18 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
-        rootView = inflater.inflate(R.layout.match_list_info,
+        mRootView = inflater.inflate(R.layout.match_list_info,
                 container, false);
         mApplicationContext = MainActivity.getContextOfApplication();
-        return rootView;
+        return mRootView;
     }
 
     public void changeGameInfoData(Uri uri){
         mCurrentGameUri = uri;
-        tNameA = (TextView) rootView.findViewById(R.id.team_a_name);
-        tNameB = (TextView) rootView.findViewById(R.id.team_b_name);
-        tResA = (TextView) rootView.findViewById(R.id.team_a_score);
-        tResB = (TextView) rootView.findViewById(R.id.team_b_score);
+        tNameA = (TextView) mRootView.findViewById(R.id.team_a_name);
+        tNameB = (TextView) mRootView.findViewById(R.id.team_b_name);
+        tResA = (TextView) mRootView.findViewById(R.id.team_a_score);
+        tResB = (TextView) mRootView.findViewById(R.id.team_b_score);
         getLoaderManager().restartLoader(MATCH_LOADER, null, this);
     }
 
@@ -135,15 +133,15 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
             }
 
             if(mLatitude == null){
-                Button gymPosition = (Button) rootView.findViewById(R.id.gym_position);
+                Button gymPosition = (Button) mRootView.findViewById(R.id.gym_position);
                 gymPosition.setVisibility(View.GONE);
             }
 
             try {
                 JSONArray resultsArray = new JSONArray(totalResultsString);
                 totalResultsStringArray = new String[resultsArray.length()];
-                LinearLayout setTitleList = (LinearLayout) rootView.findViewById(R.id.set_title_list);
-                LinearLayout setList = (LinearLayout) rootView.findViewById(R.id.set_list);
+                LinearLayout setTitleList = (LinearLayout) mRootView.findViewById(R.id.set_title_list);
+                LinearLayout setList = (LinearLayout) mRootView.findViewById(R.id.set_list);
                 for(int i = 0; i < resultsArray.length(); i++){
                     totalResultsStringArray[i] = resultsArray.getString(i);
 
@@ -164,9 +162,9 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            View parentLayout = rootView.findViewById(R.id.game_list_info_layout_parent);
+            View parentLayout = mRootView.findViewById(R.id.game_list_info_layout_parent);
             parentLayout.setVisibility(View.VISIBLE);
-            View emptyView = rootView.findViewById(R.id.empty_view);
+            View emptyView = mRootView.findViewById(R.id.empty_view);
             emptyView.setVisibility(View.GONE);
         }
     }
@@ -204,10 +202,10 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
     }
 
     public void shareOnFB(){
-        shareDialog = new ShareDialog(this);
+        mShareDialog = new ShareDialog(this);
         // this part is optional
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+        mCallbackManager = CallbackManager.Factory.create();
+        mShareDialog.registerCallback(mCallbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
             }
@@ -238,15 +236,15 @@ public class GameListInfoFragment extends Fragment implements LoaderManager.Load
                     .setContentUrl(Uri.parse("https://maxcdn.icons8.com/Share/icon/Sports//volleyball1600.png"))
                     .build();
 
-            shareDialog.show(linkContent);
+            mShareDialog.show(linkContent);
         }
     }
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(callbackManager != null){
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(mCallbackManager != null){
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 

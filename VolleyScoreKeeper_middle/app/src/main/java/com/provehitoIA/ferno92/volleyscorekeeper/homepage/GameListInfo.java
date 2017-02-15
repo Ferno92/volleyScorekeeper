@@ -28,17 +28,10 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 import com.provehitoIA.ferno92.volleyscorekeeper.R;
 import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.tweetcomposer.Card;
-import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import static com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract.MatchEntry.COLUMN_LONGITUDE;
 
 
 /**
@@ -54,9 +47,9 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
     TextView tNameB;
     TextView tResA;
     TextView tResB;
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
-    String[] totalResultsStringArray;
+    CallbackManager mCallbackManager;
+    ShareDialog mShareDialog;
+    String[]totalResultsStringArray;
     String mLatitude = null;
     String mLongitude = null;
 
@@ -278,10 +271,10 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void shareOnFB(){
-        shareDialog = new ShareDialog(this);
+        mShareDialog = new ShareDialog(this);
         // this part is optional
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+        mCallbackManager = CallbackManager.Factory.create();
+        mShareDialog.registerCallback(mCallbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
 
@@ -314,15 +307,15 @@ public class GameListInfo extends AppCompatActivity implements LoaderManager.Loa
                     .setContentUrl(Uri.parse("https://maxcdn.icons8.com/Share/icon/Sports//volleyball1600.png"))
                     .build();
 
-            shareDialog.show(linkContent);
+            mShareDialog.show(linkContent);
         }
     }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(callbackManager != null){
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(mCallbackManager != null){
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 

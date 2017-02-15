@@ -46,7 +46,7 @@ public class CurrentLineUpFragment extends Fragment {
         CurrentLineUpFragment lineUpFragment = new CurrentLineUpFragment();
         Bundle args = new Bundle();
         args.putStringArrayList("lineUpA", lineUpA);
-        args.putStringArrayList("lineUpB", lineUpB);
+        args.putStringArrayList("mLineUpB", lineUpB);
         args.putString("nameA", nameA);
         args.putString("nameB", nameB);
         lineUpFragment.setArguments(args);
@@ -77,7 +77,7 @@ public class CurrentLineUpFragment extends Fragment {
 
     private void getLineUp() {
         mLineUpA = getArguments().getStringArrayList("lineUpA");
-        mLineUpB = getArguments().getStringArrayList("lineUpB");
+        mLineUpB = getArguments().getStringArrayList("mLineUpB");
         mNameA = getArguments().getString("nameA");
         mNameB = getArguments().getString("nameB");
         TextView nameATextView = (TextView) mRootView.findViewById(R.id.lineup_name_a);

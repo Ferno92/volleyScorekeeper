@@ -147,7 +147,7 @@ public class MatchProvider extends ContentProvider {
             case GAMES:
                 return updateMatch(uri, contentValues, selection, selectionArgs);
             case GAME_ID:
-                // For the PET_ID code, extract out the ID from the URI,
+                // For the GAME_ID code, extract out the ID from the URI,
                 // so we know which row to update. Selection will be "_id=?" and selection
                 // arguments will be a String array containing the actual ID.
                 selection = MatchContract.MatchEntry._ID + "=?";

@@ -1,14 +1,12 @@
 package com.provehitoIA.ferno92.volleyscorekeeper.matchInfos;
 
 import android.Manifest;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -27,10 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.provehitoIA.ferno92.volleyscorekeeper.R;
-import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract;
-import com.provehitoIA.ferno92.volleyscorekeeper.homepage.GameListInfo;
-import com.provehitoIA.ferno92.volleyscorekeeper.homepage.GameListInfoFragment;
-import com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity;
 import com.provehitoIA.ferno92.volleyscorekeeper.match.VolleyMatch;
 
 import java.io.ByteArrayOutputStream;
@@ -44,16 +38,16 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
  */
 
 public class MatchInfo extends AppCompatActivity {
-    ArrayList<String> lineUpA = new ArrayList<String>();
-    ArrayList<String> lineUpB = new ArrayList<String>();
-    EditText teamAEditText;
-    EditText teamBEditText;
-    ImageView missingAName;
-    ImageView missingBName;
+    ArrayList<String> mLineUpA = new ArrayList<String>();
+    ArrayList<String> mLineUpB = new ArrayList<String>();
+    EditText mTeamAEditText;
+    EditText mTeamBEditText;
+    ImageView mMissingAName;
+    ImageView mMissingBName;
 
-    String teamAName;
-    String teamBName;
-    Boolean isLoadingImageA = false;
+    String mTeamAName;
+    String mTeamBName;
+    Boolean mIsLoadingImageA = false;
     byte[] mImageA;
     byte[] mImageB;
     boolean mHasGPSpermission;
@@ -65,9 +59,9 @@ public class MatchInfo extends AppCompatActivity {
         setContentView(R.layout.team_infos);
         if (getIntent().getExtras() != null) {
             setTeamName();
-            lineUpA = getIntent().getExtras().getStringArrayList("lineUpA");
-            lineUpB = getIntent().getExtras().getStringArrayList("lineUpB");
-            if (lineUpA.size() == 6 && lineUpB.size() == 6) {
+            mLineUpA = getIntent().getExtras().getStringArrayList("mLineUpA");
+            mLineUpB = getIntent().getExtras().getStringArrayList("mLineUpB");
+            if (mLineUpA.size() == 6 && mLineUpB.size() == 6) {
                 // show different court image maybe with some effects
                 ImageView emptyCourt = (ImageView) findViewById(R.id.empty_court);
                 emptyCourt.setImageResource(R.drawable.volleyball_court_done);
@@ -97,12 +91,12 @@ public class MatchInfo extends AppCompatActivity {
 
     public void editLineUp(View v) {
         saveTeamsName();
-        if (teamAEditText.getText().toString().isEmpty() == false && teamBEditText.getText().toString().isEmpty() == false) {
+        if (mTeamAEditText.getText().toString().isEmpty() == false && mTeamBEditText.getText().toString().isEmpty() == false) {
             Intent intent = new Intent(MatchInfo.this, EditLineUp.class);
-            intent.putExtra("teamA", teamAEditText.getText().toString());
-            intent.putExtra("teamB", teamBEditText.getText().toString());
-            intent.putExtra("lineUpA", lineUpA);
-            intent.putExtra("lineUpB", lineUpB);
+            intent.putExtra("teamA", mTeamAEditText.getText().toString());
+            intent.putExtra("teamB", mTeamBEditText.getText().toString());
+            intent.putExtra("mLineUpA", mLineUpA);
+            intent.putExtra("mLineUpB", mLineUpB);
             startActivity(intent);
         } else {
             showErrors();
@@ -119,10 +113,10 @@ public class MatchInfo extends AppCompatActivity {
             getLineUp();
         }
 
-        if (teamAEditText.getText().toString().isEmpty() == false && teamBEditText.getText().toString().isEmpty() == false) {
+        if (mTeamAEditText.getText().toString().isEmpty() == false && mTeamBEditText.getText().toString().isEmpty() == false) {
 
             // Alert if no lineUp
-            if (lineUpA.size() < 6 || lineUpB.size() < 6) {
+            if (mLineUpA.size() < 6 || mLineUpB.size() < 6) {
                 AlertDialog.Builder alertLineUp = new AlertDialog.Builder(this);
                 alertLineUp.setTitle("Line Up");
                 alertLineUp.setMessage("You haven't set the team's line-up. " +
@@ -157,36 +151,36 @@ public class MatchInfo extends AppCompatActivity {
 
     private Intent createIntent(boolean withLineUp) {
         Intent intent = new Intent(MatchInfo.this, VolleyMatch.class);
-        intent.putExtra("teamA", teamAEditText.getText().toString());
-        intent.putExtra("teamB", teamBEditText.getText().toString());
+        intent.putExtra("teamA", mTeamAEditText.getText().toString());
+        intent.putExtra("teamB", mTeamBEditText.getText().toString());
         intent.putExtra("logoA", mImageA);
         intent.putExtra("logoB", mImageB);
         intent.putExtra("positions", mPositions);
         intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
 
         if (withLineUp) {
-            intent.putExtra("lineUpA", lineUpA);
-            intent.putExtra("lineUpB", lineUpB);
+            intent.putExtra("mLineUpA", mLineUpA);
+            intent.putExtra("mLineUpB", mLineUpB);
         }
         return intent;
     }
 
     public void saveTeamsName() {
-        teamAEditText = (EditText) findViewById(R.id.edit_team_a);
-        teamBEditText = (EditText) findViewById(R.id.edit_team_b);
+        mTeamAEditText = (EditText) findViewById(R.id.edit_team_a);
+        mTeamBEditText = (EditText) findViewById(R.id.edit_team_b);
     }
 
     public void showErrors() {
-        missingAName = (ImageView) findViewById(R.id.missing_a_name);
-        missingBName = (ImageView) findViewById(R.id.missing_b_name);
-        missingAName.setVisibility(View.INVISIBLE);
-        missingBName.setVisibility(View.INVISIBLE);
+        mMissingAName = (ImageView) findViewById(R.id.missing_a_name);
+        mMissingBName = (ImageView) findViewById(R.id.missing_b_name);
+        mMissingAName.setVisibility(View.INVISIBLE);
+        mMissingBName.setVisibility(View.INVISIBLE);
 
-        if (teamAEditText.getText().toString().isEmpty()) {
-            missingAName.setVisibility(View.VISIBLE);
+        if (mTeamAEditText.getText().toString().isEmpty()) {
+            mMissingAName.setVisibility(View.VISIBLE);
         }
-        if (teamBEditText.getText().toString().isEmpty()) {
-            missingBName.setVisibility(View.VISIBLE);
+        if (mTeamBEditText.getText().toString().isEmpty()) {
+            mMissingBName.setVisibility(View.VISIBLE);
         }
         Context context = getApplicationContext();
         CharSequence text = "Missing team name";
@@ -198,13 +192,13 @@ public class MatchInfo extends AppCompatActivity {
 
 
     public void setTeamName() {
-        teamAName = getIntent().getExtras().getString("teamA");
-        teamBName = getIntent().getExtras().getString("teamB");
+        mTeamAName = getIntent().getExtras().getString("teamA");
+        mTeamBName = getIntent().getExtras().getString("teamB");
 
         EditText teamANameEdit = (EditText) findViewById(R.id.edit_team_a);
-        teamANameEdit.setText(teamAName, TextView.BufferType.EDITABLE);
+        teamANameEdit.setText(mTeamAName, TextView.BufferType.EDITABLE);
         EditText teamBNameEdit = (EditText) findViewById(R.id.edit_team_b);
-        teamBNameEdit.setText(teamBName, TextView.BufferType.EDITABLE);
+        teamBNameEdit.setText(mTeamBName, TextView.BufferType.EDITABLE);
     }
 
     public int getDeviceHeight() {
@@ -231,8 +225,8 @@ public class MatchInfo extends AppCompatActivity {
         if (h > w && (h > 600 || w > 600)) {
             getLineUp();
         }
-        outState.putStringArrayList("lineUpA", lineUpA);
-        outState.putStringArrayList("lineUpB", lineUpB);
+        outState.putStringArrayList("mLineUpA", mLineUpA);
+        outState.putStringArrayList("mLineUpB", mLineUpB);
         super.onSaveInstanceState(outState);
     }
 
@@ -240,8 +234,8 @@ public class MatchInfo extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        lineUpA = savedInstanceState.getStringArrayList("lineUpA");
-        lineUpB = savedInstanceState.getStringArrayList("lineUpB");
+        mLineUpA = savedInstanceState.getStringArrayList("mLineUpA");
+        mLineUpB = savedInstanceState.getStringArrayList("mLineUpB");
         int w = getDeviceWidth();
         int h = getDeviceHeight();
 
@@ -253,7 +247,7 @@ public class MatchInfo extends AppCompatActivity {
 
     public void setPreviousLineUp() {
 
-        if (lineUpA.size() != 0 || lineUpB.size() != 0) {
+        if (mLineUpA.size() != 0 || mLineUpB.size() != 0) {
             LinearLayout teamA = (LinearLayout) findViewById(R.id.team_a);
             for (int i = 0; i < teamA.getChildCount(); i++) {
                 if (teamA.getChildAt(i) instanceof LinearLayout) {
@@ -261,7 +255,7 @@ public class MatchInfo extends AppCompatActivity {
                     for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                         if (linearLayoutChild.getChildAt(j) instanceof EditText) {
                             EditText teamAElement = (EditText) linearLayoutChild.getChildAt(j);
-                            teamAElement.setText(lineUpA.get(i - 1), TextView.BufferType.EDITABLE);
+                            teamAElement.setText(mLineUpA.get(i - 1), TextView.BufferType.EDITABLE);
                         }
                     }
                 }
@@ -274,7 +268,7 @@ public class MatchInfo extends AppCompatActivity {
                     for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                         if (linearLayoutChild.getChildAt(j) instanceof EditText) {
                             EditText teamBElement = (EditText) linearLayoutChild.getChildAt(j);
-                            teamBElement.setText(lineUpB.get(i - 1), TextView.BufferType.EDITABLE);
+                            teamBElement.setText(mLineUpB.get(i - 1), TextView.BufferType.EDITABLE);
                         }
                     }
                 }
@@ -283,8 +277,8 @@ public class MatchInfo extends AppCompatActivity {
     }
 
     public void getLineUp() {
-        lineUpA.clear();
-        lineUpB.clear();
+        mLineUpA.clear();
+        mLineUpB.clear();
         LinearLayout teamA = (LinearLayout) findViewById(R.id.team_a);
         if (teamA != null) {
             for (int i = 0; i < teamA.getChildCount(); i++) {
@@ -293,7 +287,7 @@ public class MatchInfo extends AppCompatActivity {
                     for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                         if (linearLayoutChild.getChildAt(j) instanceof EditText) {
                             if (((EditText) linearLayoutChild.getChildAt(j)).getText().toString().isEmpty() == false) {
-                                lineUpA.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
+                                mLineUpA.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
                             }
                         }
                     }
@@ -307,7 +301,7 @@ public class MatchInfo extends AppCompatActivity {
                     for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                         if (linearLayoutChild.getChildAt(j) instanceof EditText) {
                             if (((EditText) linearLayoutChild.getChildAt(j)).getText().toString().isEmpty() == false) {
-                                lineUpB.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
+                                mLineUpB.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
                             }
                         }
                     }
@@ -323,7 +317,7 @@ public class MatchInfo extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                isLoadingImageA = true;
+                mIsLoadingImageA = true;
                 getPicture();
             }
         });
@@ -331,7 +325,7 @@ public class MatchInfo extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                isLoadingImageA = false;
+                mIsLoadingImageA = false;
                 getPicture();
             }
         });
@@ -362,7 +356,7 @@ public class MatchInfo extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         ImageView imageView;
-        if (isLoadingImageA) {
+        if (mIsLoadingImageA) {
             imageView = (ImageView) findViewById(R.id.team_a_logo);
         } else {
             imageView = (ImageView) findViewById(R.id.team_b_logo);
@@ -393,7 +387,7 @@ public class MatchInfo extends AppCompatActivity {
         if (photo != null) {
             photo = getResizedBitmap(photo, 100);
             photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            if (isLoadingImageA) {
+            if (mIsLoadingImageA) {
                 mImageA = stream.toByteArray();
             } else {
                 mImageB = stream.toByteArray();

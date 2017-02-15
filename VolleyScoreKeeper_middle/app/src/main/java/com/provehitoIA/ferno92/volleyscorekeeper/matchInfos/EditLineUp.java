@@ -20,19 +20,19 @@ import java.util.ArrayList;
  */
 
 public class EditLineUp extends AppCompatActivity {
-    ArrayList<String> lineUpA = new ArrayList<String>();
-    ArrayList<String> lineUpB = new ArrayList<String>();
-    ScrollView scrollView;
-    EditText focusEdit;
+    ArrayList<String> mLineUpA = new ArrayList<String>();
+    ArrayList<String> mLineUpB = new ArrayList<String>();
+    ScrollView mScrollView;
+    EditText mFocusEdit;
 
-    String teamAName;
-    String teamBName;
+    String mTeamAName;
+    String mTeamBName;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_line_up);
-        scrollView = (ScrollView) findViewById(R.id.line_up_scroll);
-        focusEdit = (EditText) findViewById(R.id.focus_edit);
+        mScrollView = (ScrollView) findViewById(R.id.line_up_scroll);
+        mFocusEdit = (EditText) findViewById(R.id.focus_edit);
         focusOnView();
         setTitleLineUp();
         setPreviousLineUp();
@@ -40,16 +40,16 @@ public class EditLineUp extends AppCompatActivity {
 
     public void backToMatchInfo(View v){
         Intent intent = new Intent(EditLineUp.this, MatchInfo.class);
-        intent.putExtra("teamA", teamAName);
-        intent.putExtra("teamB", teamBName);
-        intent.putExtra("lineUpA", lineUpA);
-        intent.putExtra("lineUpB", lineUpB);
+        intent.putExtra("teamA", mTeamAName);
+        intent.putExtra("teamB", mTeamBName);
+        intent.putExtra("mLineUpA", mLineUpA);
+        intent.putExtra("mLineUpB", mLineUpB);
         startActivity(intent);
     }
 
     public void saveLineUp(View v){
-        lineUpA = new ArrayList<String>();
-        lineUpB = new ArrayList<String>();
+        mLineUpA = new ArrayList<String>();
+        mLineUpB = new ArrayList<String>();
         LinearLayout teamA = (LinearLayout) findViewById(R.id.team_a);
         for( int i = 0; i < teamA.getChildCount(); i++ ) {
             if (teamA.getChildAt(i) instanceof LinearLayout) {
@@ -57,7 +57,7 @@ public class EditLineUp extends AppCompatActivity {
                 for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                     if(linearLayoutChild.getChildAt(j) instanceof  EditText){
                         if(((EditText) linearLayoutChild.getChildAt(j)).getText().toString().isEmpty() == false){
-                            lineUpA.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
+                            mLineUpA.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
                         }
                     }
                 }
@@ -71,14 +71,14 @@ public class EditLineUp extends AppCompatActivity {
                 for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                     if(linearLayoutChild.getChildAt(j) instanceof  EditText) {
                         if(((EditText) linearLayoutChild.getChildAt(j)).getText().toString().isEmpty() == false){
-                            lineUpB.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
+                            mLineUpB.add(((EditText) linearLayoutChild.getChildAt(j)).getText().toString());
                         }
                     }
                 }
             }
         }
 
-        if(lineUpA.size() == 6 && lineUpB.size() == 6){
+        if(mLineUpA.size() == 6 && mLineUpB.size() == 6){
             // Back to match info
             backToMatchInfo(v);
         }else{
@@ -93,20 +93,20 @@ public class EditLineUp extends AppCompatActivity {
 
 
     public void setTitleLineUp(){
-        teamAName = getIntent().getExtras().getString("teamA");
-        teamBName = getIntent().getExtras().getString("teamB");
+        mTeamAName = getIntent().getExtras().getString("teamA");
+        mTeamBName = getIntent().getExtras().getString("teamB");
 
         TextView titleLineUpA = (TextView) findViewById(R.id.line_up_titleA);
-        titleLineUpA.setText("Line-Up " + teamAName);
+        titleLineUpA.setText("Line-Up " + mTeamAName);
         TextView titleLineUpB = (TextView) findViewById(R.id.line_up_titleB);
-        titleLineUpB.setText("Line-Up " + teamBName);
+        titleLineUpB.setText("Line-Up " + mTeamBName);
     }
 
     public void setPreviousLineUp(){
-        lineUpA = getIntent().getExtras().getStringArrayList("lineUpA");
-        lineUpB = getIntent().getExtras().getStringArrayList("lineUpB");
+        mLineUpA = getIntent().getExtras().getStringArrayList("mLineUpA");
+        mLineUpB = getIntent().getExtras().getStringArrayList("mLineUpB");
 
-        if(lineUpA.size() == 6 && lineUpB.size()== 6){
+        if(mLineUpA.size() == 6 && mLineUpB.size()== 6){
             LinearLayout teamA = (LinearLayout) findViewById(R.id.team_a);
             for( int i = 0; i < teamA.getChildCount(); i++ ) {
                 if (teamA.getChildAt(i) instanceof LinearLayout) {
@@ -114,7 +114,7 @@ public class EditLineUp extends AppCompatActivity {
                     for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                         if(linearLayoutChild.getChildAt(j) instanceof  EditText){
                             EditText teamAElement = (EditText) linearLayoutChild.getChildAt(j);
-                            teamAElement.setText(lineUpA.get(i - 1), TextView.BufferType.EDITABLE);
+                            teamAElement.setText(mLineUpA.get(i - 1), TextView.BufferType.EDITABLE);
                         }
                     }
                 }
@@ -127,7 +127,7 @@ public class EditLineUp extends AppCompatActivity {
                     for (int j = 0; j < linearLayoutChild.getChildCount(); j++) {
                         if(linearLayoutChild.getChildAt(j) instanceof  EditText) {
                             EditText teamBElement = (EditText) linearLayoutChild.getChildAt(j);
-                            teamBElement.setText(lineUpB.get(i - 1), TextView.BufferType.EDITABLE);
+                            teamBElement.setText(mLineUpB.get(i - 1), TextView.BufferType.EDITABLE);
                         }
                     }
                 }
@@ -136,10 +136,10 @@ public class EditLineUp extends AppCompatActivity {
     }
 
     private final void focusOnView(){
-        scrollView.post(new Runnable() {
+        mScrollView.post(new Runnable() {
             @Override
             public void run() {
-                scrollView.scrollTo(0, focusEdit.getBottom());
+                mScrollView.scrollTo(0, mFocusEdit.getBottom());
             }
         });
     }

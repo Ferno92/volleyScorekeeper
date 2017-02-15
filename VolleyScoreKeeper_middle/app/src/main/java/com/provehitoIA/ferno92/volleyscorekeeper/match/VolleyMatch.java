@@ -1,6 +1,5 @@
 package com.provehitoIA.ferno92.volleyscorekeeper.match;
 
-import android.app.FragmentTransaction;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
@@ -13,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,10 +42,8 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.PlusShare;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
-import com.provehitoIA.ferno92.volleyscorekeeper.OnSwipeTouchListener;
 import com.provehitoIA.ferno92.volleyscorekeeper.R;
 import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchContract;
-import com.provehitoIA.ferno92.volleyscorekeeper.data.MatchDbHelper;
 import com.provehitoIA.ferno92.volleyscorekeeper.homepage.MainActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
@@ -56,13 +51,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.Socket;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
@@ -73,17 +66,17 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 
 public class VolleyMatch extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
-    int scoreTeamA = 0;
-    int scoreTeamB = 0;
-    int scoreSetTeamA = 0;
-    int scoreSetTeamB = 0;
-    boolean setEnded = false;
-    boolean matchEnded = false;
-    String teamAName;
-    String teamBName;
-    String totalResult[] = new String[5];
-    int hasBall = -1;
-    int hasBallPrevious = -1;
+    int mScoreTeamA = 0;
+    int mScoreTeamB = 0;
+    int mScoreSetTeamA = 0;
+    int mScoreSetTeamB = 0;
+    boolean mSetEnded = false;
+    boolean mMatchEnded = false;
+    String mTeamAName;
+    String mTeamBName;
+    String mTotalResult[] = new String[5];
+    int mHasBall = -1;
+    int mHasBallPrevious = -1;
     int mCurrentFragment = -1;
     byte[] mImageA;
     byte[] mImageB;
@@ -206,8 +199,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     }
 
     private void setDataFromIntent() {
-        this.teamAName = getIntent().getExtras().getString("teamA");
-        this.teamBName = getIntent().getExtras().getString("teamB");
+        this.mTeamAName = getIntent().getExtras().getString("teamA");
+        this.mTeamBName = getIntent().getExtras().getString("teamB");
         this.mImageA = getIntent().getExtras().getByteArray("logoA");
         this.mImageB = getIntent().getExtras().getByteArray("logoB");
         this.mPositions = getIntent().getExtras().getStringArrayList("positions");
@@ -218,7 +211,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     private void setLineUp() {
         if (getIntent().getExtras().getStringArrayList("lineUpA") != null) {
             lineUpA = getIntent().getExtras().getStringArrayList("lineUpA");
-            lineUpB = getIntent().getExtras().getStringArrayList("lineUpB");
+            lineUpB = getIntent().getExtras().getStringArrayList("mLineUpB");
             mSavedLineUpA = new ArrayList<>(lineUpA);
             mSavedLineUpB = new ArrayList<>(lineUpB);
         }
@@ -230,11 +223,11 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     }
 
     public String getNameTeamA() {
-        return this.teamAName;
+        return this.mTeamAName;
     }
 
     public String getNameTeamB() {
-        return this.teamBName;
+        return this.mTeamBName;
     }
 
     public ArrayList<String> getLineUpA() {
@@ -266,7 +259,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
      */
     public void displaySetForTeamA(int score, boolean setOver) {
         TextView scoreSetViewA = (TextView) findViewById(R.id.team_a_set);
-        scoreSetViewA.setText(String.valueOf(scoreSetTeamA));
+        scoreSetViewA.setText(String.valueOf(mScoreSetTeamA));
         if (setOver) {
             TextView scoreWinner = (TextView) findViewById(R.id.team_a_score);
             scoreWinner.setTypeface(Typeface.create("sans-serif-light", Typeface.BOLD));
@@ -278,7 +271,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
      */
     public void displaySetForTeamB(int score, boolean setOver) {
         TextView scoreSetViewB = (TextView) findViewById(R.id.team_b_set);
-        scoreSetViewB.setText(String.valueOf(scoreSetTeamB));
+        scoreSetViewB.setText(String.valueOf(mScoreSetTeamB));
         if (setOver) {
             TextView scoreWinner = (TextView) findViewById(R.id.team_b_score);
             scoreWinner.setTypeface(Typeface.create("sans-serif-light", Typeface.BOLD));
@@ -289,40 +282,40 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         int parentId = ((View) v.getParent()).getId();
         int team = getParentView(parentId);
 
-        if (!setEnded) {
-            if (team == 0 && scoreTeamA > 0) {
+        if (!mSetEnded) {
+            if (team == 0 && mScoreTeamA > 0) {
                 //team A
-                scoreTeamA = scoreTeamA - 1;
-                displayForTeamA(scoreTeamA);
-            } else if (team == 1 && scoreTeamB > 0) {
+                mScoreTeamA = mScoreTeamA - 1;
+                displayForTeamA(mScoreTeamA);
+            } else if (team == 1 && mScoreTeamB > 0) {
                 //team B
-                scoreTeamB = scoreTeamB - 1;
-                displayForTeamB(scoreTeamB);
+                mScoreTeamB = mScoreTeamB - 1;
+                displayForTeamB(mScoreTeamB);
             }
         } else {
-            if (scoreTeamA > scoreTeamB) {
-                //Allow decrement only scoreTeamA
+            if (mScoreTeamA > mScoreTeamB) {
+                //Allow decrement only mScoreTeamA
                 if (team == 0) {
-                    scoreTeamA = scoreTeamA - 1;
-                    displayForTeamA(scoreTeamA);
-                    scoreSetTeamA -= 1;
-                    displaySetForTeamA(scoreSetTeamA, true);
+                    mScoreTeamA = mScoreTeamA - 1;
+                    displayForTeamA(mScoreTeamA);
+                    mScoreSetTeamA -= 1;
+                    displaySetForTeamA(mScoreSetTeamA, true);
                     resetStyle();
-                    setEnded = false;
+                    mSetEnded = false;
                 }
             } else {
-                //Allow decrement only scoreTeamB
+                //Allow decrement only mScoreTeamB
                 if (team == 1) {
-                    scoreTeamB = scoreTeamB - 1;
-                    displayForTeamB(scoreTeamB);
-                    scoreSetTeamB -= 1;
-                    displaySetForTeamB(scoreSetTeamB, true);
+                    mScoreTeamB = mScoreTeamB - 1;
+                    displayForTeamB(mScoreTeamB);
+                    mScoreSetTeamB -= 1;
+                    displaySetForTeamB(mScoreSetTeamB, true);
                     resetStyle();
-                    setEnded = false;
+                    mSetEnded = false;
                 }
             }
         }
-        if ((hasBall == hasBallPrevious && hasBallPrevious == team) || hasBall == -1 || hasBallPrevious == -1) {
+        if ((mHasBall == mHasBallPrevious && mHasBallPrevious == team) || mHasBall == -1 || mHasBallPrevious == -1) {
             //Do nothing because team is already leading
         } else {
             if (lineUpA.size() == 6 && lineUpB.size() == 6) {
@@ -330,14 +323,14 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                     String itemToMove = (lineUpA.get(5));
                     lineUpA.remove(5);
                     lineUpA.add(0, itemToMove);
-                    hasBall = 1;
-                    hasBallPrevious = -1;
+                    mHasBall = 1;
+                    mHasBallPrevious = -1;
                 } else if (team == 1) {
                     String itemToMove = (lineUpB.get(5));
                     lineUpB.remove(5);
                     lineUpB.add(0, itemToMove);
-                    hasBall = 0;
-                    hasBallPrevious = -1;
+                    mHasBall = 0;
+                    mHasBallPrevious = -1;
                 }
             }
         }
@@ -347,60 +340,60 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     public void addOneForTeam(View v) {
         int parentId = ((View) v.getParent()).getId();
         int team = getParentView(parentId);
-        int maxSetPoints = scoreSetTeamA == 2 && scoreSetTeamB == 2 ? 15 : 25;
+        int maxSetPoints = mScoreSetTeamA == 2 && mScoreSetTeamB == 2 ? 15 : 25;
 
 
-        if (!setEnded) {
+        if (!mSetEnded) {
             if (team == 0) {
                 //team A
-                scoreTeamA = scoreTeamA + 1;
-                displayForTeamA(scoreTeamA);
-                if (hasBall == 1) {
+                mScoreTeamA = mScoreTeamA + 1;
+                displayForTeamA(mScoreTeamA);
+                if (mHasBall == 1) {
                     if (lineUpA.size() == 6 && lineUpB.size() == 6) {
                         String itemToMove = (lineUpA.get(0));
                         lineUpA.remove(0);
                         lineUpA.add(itemToMove);
                     }
-                    hasBallPrevious = 1;
+                    mHasBallPrevious = 1;
                 } else {
-                    hasBallPrevious = 0;
+                    mHasBallPrevious = 0;
                 }
-                hasBall = 0;
+                mHasBall = 0;
             } else if (team == 1) {
                 //team B
-                scoreTeamB = scoreTeamB + 1;
-                displayForTeamB(scoreTeamB);
-                if (hasBall == 0) {
+                mScoreTeamB = mScoreTeamB + 1;
+                displayForTeamB(mScoreTeamB);
+                if (mHasBall == 0) {
                     if (lineUpA.size() == 6 && lineUpB.size() == 6) {
                         String itemToMove = (lineUpB.get(0));
                         lineUpB.remove(0);
                         lineUpB.add(itemToMove);
                     }
-                    hasBallPrevious = 0;
+                    mHasBallPrevious = 0;
                 } else {
-                    hasBallPrevious = 1;
+                    mHasBallPrevious = 1;
                 }
-                hasBall = 1;
+                mHasBall = 1;
             }
 
-            if ((scoreTeamA > (scoreTeamB + 1) || scoreTeamB > (scoreTeamA + 1)) && (scoreTeamA > maxSetPoints - 1 || scoreTeamB > maxSetPoints - 1)) {
-                setEnded = true;
-                CharSequence setWinner = scoreTeamA > scoreTeamB ? teamAName : teamBName;
+            if ((mScoreTeamA > (mScoreTeamB + 1) || mScoreTeamB > (mScoreTeamA + 1)) && (mScoreTeamA > maxSetPoints - 1 || mScoreTeamB > maxSetPoints - 1)) {
+                mSetEnded = true;
+                CharSequence setWinner = mScoreTeamA > mScoreTeamB ? mTeamAName : mTeamBName;
 
-                totalResult[scoreSetTeamA + scoreSetTeamB] = scoreTeamA + " - " + scoreTeamB;
-                showSetResult(scoreTeamA, scoreTeamB, scoreSetTeamA + scoreSetTeamB);
+                mTotalResult[mScoreSetTeamA + mScoreSetTeamB] = mScoreTeamA + " - " + mScoreTeamB;
+                showSetResult(mScoreTeamA, mScoreTeamB, mScoreSetTeamA + mScoreSetTeamB);
 
-                if (scoreTeamA > scoreTeamB) {
-                    scoreSetTeamA += 1;
-                    displaySetForTeamA(scoreSetTeamA, true);
+                if (mScoreTeamA > mScoreTeamB) {
+                    mScoreSetTeamA += 1;
+                    displaySetForTeamA(mScoreSetTeamA, true);
                 } else {
-                    scoreSetTeamB += 1;
-                    displaySetForTeamB(scoreSetTeamB, true);
+                    mScoreSetTeamB += 1;
+                    displaySetForTeamB(mScoreSetTeamB, true);
                 }
 
                 //Match ended
-                if (scoreSetTeamA == 3 || scoreSetTeamB == 3) {
-                    matchEnded = true;
+                if (mScoreSetTeamA == 3 || mScoreSetTeamB == 3) {
+                    mMatchEnded = true;
                     // Set bold winner score
                     if (team == 0) {
                         TextView scoreSetViewA = (TextView) findViewById(R.id.team_a_set);
@@ -489,23 +482,23 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     }
 
     public void resetScore(View v) {
-        if (!matchEnded) {
+        if (!mMatchEnded) {
             TextView scoreViewA = (TextView) findViewById(R.id.team_a_score);
-            scoreTeamA = 0;
-            scoreViewA.setText(String.valueOf(scoreTeamA));
+            mScoreTeamA = 0;
+            scoreViewA.setText(String.valueOf(mScoreTeamA));
             TextView scoreViewB = (TextView) findViewById(R.id.team_b_score);
-            scoreTeamB = 0;
-            scoreViewB.setText(String.valueOf(scoreTeamB));
+            mScoreTeamB = 0;
+            scoreViewB.setText(String.valueOf(mScoreTeamB));
 
-            setEnded = false;
+            mSetEnded = false;
 
             TextView scoreTeamA = (TextView) findViewById(R.id.team_a_score);
             scoreTeamA.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
             TextView scoreTeamB = (TextView) findViewById(R.id.team_b_score);
             scoreTeamB.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
 //            resetCheckbox();
-            hasBallPrevious = -1;
-            hasBall = -1;
+            mHasBallPrevious = -1;
+            mHasBall = -1;
             lineUpA = new ArrayList<>(mSavedLineUpA);
             lineUpB = new ArrayList<>(mSavedLineUpB);
         }
@@ -515,10 +508,10 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     public void saveMatch(View v) {
 
         ContentValues values = new ContentValues();
-        values.put(MatchContract.MatchEntry.COLUMN_NAME_A, teamAName);
-        values.put(MatchContract.MatchEntry.COLUMN_NAME_B, teamBName);
-        values.put(MatchContract.MatchEntry.COLUMN_RES_A, scoreSetTeamA);
-        values.put(MatchContract.MatchEntry.COLUMN_RES_B, scoreSetTeamB);
+        values.put(MatchContract.MatchEntry.COLUMN_NAME_A, mTeamAName);
+        values.put(MatchContract.MatchEntry.COLUMN_NAME_B, mTeamBName);
+        values.put(MatchContract.MatchEntry.COLUMN_RES_A, mScoreSetTeamA);
+        values.put(MatchContract.MatchEntry.COLUMN_RES_B, mScoreSetTeamB);
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, "25 - 23, 25 - 18, 20 - 25, 22 - 25, 15 - 2");
         values.put(MatchContract.MatchEntry.COLUMN_LOGO_A, mImageA);
         values.put(MatchContract.MatchEntry.COLUMN_LOGO_B, mImageB);
@@ -529,7 +522,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             values.put(MatchContract.MatchEntry.COLUMN_LATITUDE, "");
             values.put(MatchContract.MatchEntry.COLUMN_LONGITUDE, "");
         }
-        JSONArray mJSONArray = new JSONArray(Arrays.asList(totalResult));
+        JSONArray mJSONArray = new JSONArray(Arrays.asList(mTotalResult));
         String totalResultString = mJSONArray.toString();
         values.put(MatchContract.MatchEntry.COLUMN_TOTAL_RES, totalResultString);
 
@@ -548,13 +541,13 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt("scoreTeamA", scoreTeamA);
-        outState.putInt("scoreTeamB", scoreTeamB);
-        outState.putInt("scoreSetTeamA", scoreSetTeamA);
-        outState.putInt("scoreSetTeamB", scoreSetTeamB);
-        outState.putBoolean("setEnded", setEnded);
-        outState.putBoolean("matchEnded", matchEnded);
-        outState.putStringArray("totalResult", totalResult);
+        outState.putInt("mScoreTeamA", mScoreTeamA);
+        outState.putInt("mScoreTeamB", mScoreTeamB);
+        outState.putInt("mScoreSetTeamA", mScoreSetTeamA);
+        outState.putInt("mScoreSetTeamB", mScoreSetTeamB);
+        outState.putBoolean("mSetEnded", mSetEnded);
+        outState.putBoolean("mMatchEnded", mMatchEnded);
+        outState.putStringArray("mTotalResult", mTotalResult);
         super.onSaveInstanceState(outState);
     }
 
@@ -562,26 +555,26 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        setEnded = savedInstanceState.getBoolean("setEnded");
-        matchEnded = savedInstanceState.getBoolean("matchEnded");
+        mSetEnded = savedInstanceState.getBoolean("mSetEnded");
+        mMatchEnded = savedInstanceState.getBoolean("mMatchEnded");
 
-        scoreTeamA = savedInstanceState.getInt("scoreTeamA");
-        displayForTeamA(scoreTeamA);
-        scoreTeamB = savedInstanceState.getInt("scoreTeamB");
-        displayForTeamB(scoreTeamB);
-        scoreSetTeamA = savedInstanceState.getInt("scoreSetTeamA");
-        scoreSetTeamB = savedInstanceState.getInt("scoreSetTeamB");
-        if (scoreTeamA > scoreTeamB && setEnded) {
-            displaySetForTeamA(scoreSetTeamA, true);
-            displaySetForTeamB(scoreSetTeamB, false);
-        } else if (scoreTeamA < scoreTeamB && setEnded) {
-            displaySetForTeamA(scoreSetTeamA, false);
-            displaySetForTeamB(scoreSetTeamB, true);
+        mScoreTeamA = savedInstanceState.getInt("mScoreTeamA");
+        displayForTeamA(mScoreTeamA);
+        mScoreTeamB = savedInstanceState.getInt("mScoreTeamB");
+        displayForTeamB(mScoreTeamB);
+        mScoreSetTeamA = savedInstanceState.getInt("mScoreSetTeamA");
+        mScoreSetTeamB = savedInstanceState.getInt("mScoreSetTeamB");
+        if (mScoreTeamA > mScoreTeamB && mSetEnded) {
+            displaySetForTeamA(mScoreSetTeamA, true);
+            displaySetForTeamB(mScoreSetTeamB, false);
+        } else if (mScoreTeamA < mScoreTeamB && mSetEnded) {
+            displaySetForTeamA(mScoreSetTeamA, false);
+            displaySetForTeamB(mScoreSetTeamB, true);
         } else {
-            displaySetForTeamA(scoreSetTeamA, false);
-            displaySetForTeamB(scoreSetTeamB, false);
+            displaySetForTeamA(mScoreSetTeamA, false);
+            displaySetForTeamB(mScoreSetTeamB, false);
         }
-        totalResult = savedInstanceState.getStringArray("totalResult");
+        mTotalResult = savedInstanceState.getStringArray("mTotalResult");
         //TODO ended game
 
     }
@@ -703,9 +696,9 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
             String resultsString = getResultString();
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setContentTitle(teamAName.toString() + " vs " + teamBName.toString())
+                    .setContentTitle(mTeamAName.toString() + " vs " + mTeamBName.toString())
                     .setContentDescription(
-                            "Results: " + scoreSetTeamA + " - " + scoreSetTeamB +
+                            "Results: " + mScoreSetTeamA + " - " + mScoreSetTeamB +
                                     ", Set list: " + resultsString)
                     .setContentUrl(Uri.parse("https://maxcdn.icons8.com/Share/icon/Sports//volleyball1600.png"))
                     .build();
@@ -728,8 +721,8 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         // Launch the Google+ share dialog with attribution to your app.
         Intent shareIntent = new PlusShare.Builder(this)
                 .setType("text/plain")
-                .setText(teamAName.toString() + " vs " + teamBName.toString() + "\n" +
-                        "Results: " + "\n" + scoreSetTeamA + " - " + scoreSetTeamB +
+                .setText(mTeamAName.toString() + " vs " + mTeamBName.toString() + "\n" +
+                        "Results: " + "\n" + mScoreSetTeamA + " - " + mScoreSetTeamB +
                         "\n" + "Set list: " + "\n" + resultsString)
                 .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.provehitoIA.ferno92.volleyscorekeeper"))
                 .getIntent();
@@ -742,17 +735,17 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
         TweetComposer.Builder builder = new TweetComposer.Builder(this)
                 //max length string == 10 each team
-                .text(teamAName.toString() + " vs " + teamBName.toString() + "\n" +
-                        "Results: " + scoreSetTeamA + " - " + scoreSetTeamB +
+                .text(mTeamAName.toString() + " vs " + mTeamBName.toString() + "\n" +
+                        "Results: " + mScoreSetTeamA + " - " + mScoreSetTeamB +
                         "\n" + "Set list: " + resultsString + "\n #volley #VolleyScoreKeeper" + "\n\n" + "https://play.google.com/store/apps/details?id=com.provehitoIA.ferno92.volleyscorekeeper");
         builder.show();
     }
 
     public String getResultString() {
         String resultsString = "";
-        for (int i = 0; i < totalResult.length; i++) {
-            if (totalResult[i] != null) {
-                resultsString = resultsString.concat(totalResult[i].toString() + " | ");
+        for (int i = 0; i < mTotalResult.length; i++) {
+            if (mTotalResult[i] != null) {
+                resultsString = resultsString.concat(mTotalResult[i].toString() + " | ");
             }
         }
         return resultsString;
@@ -810,20 +803,20 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 //        if (currentFragment != null && !mOnEditLineUp) {
 //            displayNameTeamA();
 //            displayNameTeamB();
-//            displayForTeamA(scoreTeamA);
-//            displayForTeamB(scoreTeamB);
-//            if (scoreTeamA > scoreTeamB && setEnded) {
-//                displaySetForTeamA(scoreSetTeamA, true);
-//                displaySetForTeamB(scoreSetTeamB, false);
-//            }else if (scoreTeamA < scoreTeamB && setEnded) {
-//                displaySetForTeamA(scoreSetTeamA, false);
-//                displaySetForTeamB(scoreSetTeamB, true);
+//            displayForTeamA(mScoreTeamA);
+//            displayForTeamB(mScoreTeamB);
+//            if (mScoreTeamA > mScoreTeamB && mSetEnded) {
+//                displaySetForTeamA(mScoreSetTeamA, true);
+//                displaySetForTeamB(mScoreSetTeamB, false);
+//            }else if (mScoreTeamA < mScoreTeamB && mSetEnded) {
+//                displaySetForTeamA(mScoreSetTeamA, false);
+//                displaySetForTeamB(mScoreSetTeamB, true);
 //            } else {
-//                displaySetForTeamA(scoreSetTeamA, false);
-//                displaySetForTeamB(scoreSetTeamB, false);
+//                displaySetForTeamA(mScoreSetTeamA, false);
+//                displaySetForTeamB(mScoreSetTeamB, false);
 //            }
 //            refillSetResults();
-//            if(matchEnded){
+//            if(mMatchEnded){
 //                Button resetButton = (Button) findViewById(R.id.restart_set_button);
 //                resetButton.setVisibility(View.INVISIBLE);
 //                Button saveGameButton = (Button) findViewById(R.id.save_game_button);
@@ -880,10 +873,10 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     }
 
     private void refillSetResults() {
-        for (int i = 0; i < totalResult.length; i++) {
-            if (totalResult[i] != null) {
+        for (int i = 0; i < mTotalResult.length; i++) {
+            if (mTotalResult[i] != null) {
                 LinearLayout setResults = (LinearLayout) findViewById(R.id.set_list);
-                ((TextView) setResults.getChildAt(i)).setText(totalResult[i]);
+                ((TextView) setResults.getChildAt(i)).setText(mTotalResult[i]);
             }
         }
     }
@@ -897,7 +890,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         if (mainFragment instanceof CurrentLineUpFragment) {
             lineUpA = ((CurrentLineUpFragment) mainFragment).getCurrentLineUpA();
             lineUpB = ((CurrentLineUpFragment) mainFragment).getCurrentLineUpB();
-            if (scoreTeamA == scoreTeamB && scoreTeamA == 0) {
+            if (mScoreTeamA == mScoreTeamB && mScoreTeamA == 0) {
                 mSavedLineUpA = new ArrayList<>(lineUpA);
                 mSavedLineUpB = new ArrayList<>(lineUpB);
             }
@@ -932,12 +925,12 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         if (lineUpA.size() == 6 && lineUpB.size() == 6) {
             lineUpFragment = new CurrentLineUpFragment();
             args.putStringArrayList("lineUpA", lineUpA);
-            args.putStringArrayList("lineUpB", lineUpB);
+            args.putStringArrayList("mLineUpB", lineUpB);
         } else {
             lineUpFragment = new EditLineUpFragment();
         }
-        args.putString("nameA", teamAName);
-        args.putString("nameB", teamBName);
+        args.putString("nameA", mTeamAName);
+        args.putString("nameB", mTeamBName);
         lineUpFragment.setArguments(args);
 
         return lineUpFragment;
@@ -966,17 +959,17 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     private void syncGame() {
         JSONObject gameData = new JSONObject();
         try {
-            gameData.put("scoreA", scoreTeamA);
-            gameData.put("scoreB", scoreTeamB);
-            gameData.put("setScoreA", scoreSetTeamA);
-            gameData.put("setScoreB", scoreSetTeamB);
+            gameData.put("scoreA", mScoreTeamA);
+            gameData.put("scoreB", mScoreTeamB);
+            gameData.put("setScoreA", mScoreSetTeamA);
+            gameData.put("setScoreB", mScoreSetTeamB);
             ArrayList<String> list = new ArrayList<String>();
-            for (int i = 0; i < totalResult.length; i++) {
-                list.add(totalResult[i]);
+            for (int i = 0; i < mTotalResult.length; i++) {
+                list.add(mTotalResult[i]);
             }
             gameData.put("setResults", new JSONArray(list));
             gameData.put("lineUpA", new JSONArray(lineUpA));
-            gameData.put("lineUpB", new JSONArray(lineUpB));
+            gameData.put("mLineUpB", new JSONArray(lineUpB));
             gameData.put("positions", new JSONArray(mPositions));
             gameData.put("id", mGameId);
 
@@ -992,19 +985,19 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         JSONObject gameData = new JSONObject();
         //TODO: divide data to send only once and not. Change lineup to array as total results before send
         try {
-            gameData.put("nameA", teamAName);
-            gameData.put("nameB", teamBName);
-            gameData.put("scoreA", scoreTeamA);
-            gameData.put("scoreB", scoreTeamB);
-            gameData.put("setScoreA", scoreSetTeamA);
-            gameData.put("setScoreB", scoreSetTeamB);
+            gameData.put("nameA", mTeamAName);
+            gameData.put("nameB", mTeamBName);
+            gameData.put("scoreA", mScoreTeamA);
+            gameData.put("scoreB", mScoreTeamB);
+            gameData.put("setScoreA", mScoreSetTeamA);
+            gameData.put("setScoreB", mScoreSetTeamB);
             ArrayList<String> list = new ArrayList<String>();
-            for (int i = 0; i < totalResult.length; i++) {
-                list.add(totalResult[i]);
+            for (int i = 0; i < mTotalResult.length; i++) {
+                list.add(mTotalResult[i]);
             }
             gameData.put("setResults", new JSONArray(list));
             gameData.put("lineUpA", new JSONArray(lineUpA));
-            gameData.put("lineUpB", new JSONArray(lineUpB));
+            gameData.put("mLineUpB", new JSONArray(lineUpB));
             gameData.put("positions", new JSONArray(mPositions));
 
         } catch (JSONException e) {
@@ -1037,7 +1030,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
                         id = data.getString("id");
                         nameA = data.getString("nameA");
                         nameB = data.getString("nameB");
-                        if (nameA.equals(teamAName) && nameB.equals(teamBName) && !mGamePaired) {
+                        if (nameA.equals(mTeamAName) && nameB.equals(mTeamBName) && !mGamePaired) {
                             mGameId = id;
 //                            Toast.makeText(VolleyMatch.this,
 //                                    "Game Paired at url: " + mServerUrl + "?game=" + id, Toast.LENGTH_SHORT).show();

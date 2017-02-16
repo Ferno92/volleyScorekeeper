@@ -211,7 +211,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
     private void setLineUp() {
         if (getIntent().getExtras().getStringArrayList("lineUpA") != null) {
             lineUpA = getIntent().getExtras().getStringArrayList("lineUpA");
-            lineUpB = getIntent().getExtras().getStringArrayList("mLineUpB");
+            lineUpB = getIntent().getExtras().getStringArrayList("lineUpB");
             mSavedLineUpA = new ArrayList<>(lineUpA);
             mSavedLineUpB = new ArrayList<>(lineUpB);
         }
@@ -925,7 +925,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         if (lineUpA.size() == 6 && lineUpB.size() == 6) {
             lineUpFragment = new CurrentLineUpFragment();
             args.putStringArrayList("lineUpA", lineUpA);
-            args.putStringArrayList("mLineUpB", lineUpB);
+            args.putStringArrayList("lineUpB", lineUpB);
         } else {
             lineUpFragment = new EditLineUpFragment();
         }
@@ -969,7 +969,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             }
             gameData.put("setResults", new JSONArray(list));
             gameData.put("lineUpA", new JSONArray(lineUpA));
-            gameData.put("mLineUpB", new JSONArray(lineUpB));
+            gameData.put("lineUpB", new JSONArray(lineUpB));
             gameData.put("positions", new JSONArray(mPositions));
             gameData.put("id", mGameId);
 
@@ -997,7 +997,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             }
             gameData.put("setResults", new JSONArray(list));
             gameData.put("lineUpA", new JSONArray(lineUpA));
-            gameData.put("mLineUpB", new JSONArray(lineUpB));
+            gameData.put("lineUpB", new JSONArray(lineUpB));
             gameData.put("positions", new JSONArray(mPositions));
 
         } catch (JSONException e) {

@@ -64,7 +64,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
  * Created by lucas on 23/10/2016.
  */
 
-public class VolleyMatch extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+public class VolleyMatch extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener, VolleyMatchFragment.Listener {
 
     int mScoreTeamA = 0;
     int mScoreTeamB = 0;
@@ -481,7 +481,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
 
     }
 
-    public void resetScore(View v) {
+    public void resetScore() {
         if (!mMatchEnded) {
             TextView scoreViewA = (TextView) findViewById(R.id.team_a_score);
             mScoreTeamA = 0;
@@ -505,7 +505,7 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
         syncGame();
     }
 
-    public void saveMatch(View v) {
+    public void saveMatch() {
 
         ContentValues values = new ContentValues();
         values.put(MatchContract.MatchEntry.COLUMN_NAME_A, mTeamAName);
@@ -1077,5 +1077,25 @@ public class VolleyMatch extends AppCompatActivity implements FragmentManager.On
             });
         }
     };
+
+    @Override
+    public void onAddOneForTeam(View view) {
+        this.addOneForTeam(view);
+    }
+
+    @Override
+    public void onRemoveOneFromTeam(View view) {
+        this.removeOneForTeam(view);
+    }
+
+    @Override
+    public void onResetScore() {
+        this.resetScore();
+    }
+
+    @Override
+    public void onSaveMatch() {
+        this.saveMatch();
+    }
 }
 

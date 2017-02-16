@@ -162,12 +162,12 @@
                     </LinearLayout>
 
                     <android.support.v7.widget.AppCompatImageButton
+                        android:id="@+id/arrow_up_left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         app:backgroundTint="@color/colorAccent"
                         tools:backgroundTint="@color/colorAccent"
-                        android:onClick="addOneForTeam"
                         android:paddingBottom="12dp"
                         android:paddingTop="12dp"
                         android:src="@drawable/ic_keyboard_arrow_up_black_24dp" />
@@ -185,12 +185,12 @@
                         android:textSize="56sp" />
 
                     <android.support.v7.widget.AppCompatImageButton
+                        android:id="@+id/arrow_down_left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         app:backgroundTint="@color/colorAccent"
                         tools:backgroundTint="@color/colorAccent"
-                        android:onClick="removeOneForTeam"
                         android:paddingBottom="12dp"
                         android:paddingTop="12dp"
                         android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
@@ -237,12 +237,12 @@
                     </LinearLayout>
 
                     <android.support.v7.widget.AppCompatImageButton
+                        android:id="@+id/arrow_up_right"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         app:backgroundTint="@color/colorAccent"
                         tools:backgroundTint="@color/colorAccent"
-                        android:onClick="addOneForTeam"
                         android:paddingBottom="12dp"
                         android:paddingTop="12dp"
                         android:src="@drawable/ic_keyboard_arrow_up_black_24dp" />
@@ -260,12 +260,12 @@
                         android:textSize="56sp" />
 
                     <android.support.v7.widget.AppCompatImageButton
+                        android:id="@+id/arrow_down_right"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         app:backgroundTint="@color/colorAccent"
                         tools:backgroundTint="@color/colorAccent"
-                        android:onClick="removeOneForTeam"
                         android:paddingBottom="12dp"
                         android:paddingTop="12dp"
                         android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
@@ -439,19 +439,18 @@
             android:text="Restart Set"
             android:textColor="#FFFFFF" />
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/restart_game_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="32dp"
-            app:backgroundTint="@color/colorPrimary"
-            tools:backgroundTint="@color/colorPrimary"
-            android:onClick="resetGame"
-            android:text="Restart Game"
-            android:textColor="#FFFFFF"
-            android:visibility="invisible" />
+        <!--<android.support.v7.widget.AppCompatButton-->
+            <!--android:id="@+id/restart_game_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginBottom="32dp"-->
+            <!--app:backgroundTint="@color/colorPrimary"-->
+            <!--tools:backgroundTint="@color/colorPrimary"-->
+            <!--android:text="Restart Game"-->
+            <!--android:textColor="#FFFFFF"-->
+            <!--android:visibility="invisible" />-->
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/save_game_button"
@@ -462,7 +461,6 @@
             android:layout_marginBottom="32dp"
             app:backgroundTint="@color/colorPrimary"
             tools:backgroundTint="@color/colorPrimary"
-            android:onClick="saveMatch"
             android:text="Save Game"
             android:textColor="#FFFFFF"
             android:visibility="invisible" />

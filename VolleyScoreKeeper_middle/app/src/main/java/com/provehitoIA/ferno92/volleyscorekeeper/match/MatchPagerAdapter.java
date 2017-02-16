@@ -40,7 +40,8 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return VolleyMatchFragment.newInstance(
                         this.mMainActivity.getNameTeamA(),
-                        this.mMainActivity.getNameTeamB()
+                        this.mMainActivity.getNameTeamB(),
+                        this.mMainActivity
                 );
             case 1:
                 if (this.mIsEditingLineUp) {

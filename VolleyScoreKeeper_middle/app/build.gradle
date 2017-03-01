@@ -33,6 +33,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        debug {
+            manifest.srcFile 'src/debug/AndroidManifest.xml'
+        }
+    }
 }
 
 dependencies {
@@ -51,5 +56,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:9.0.0'
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
-    compile 'com.facebook.stetho:stetho:1.4.2'
+    compile 'com.facebook.stetho:stetho:1.0.0'
 }
